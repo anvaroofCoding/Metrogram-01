@@ -1,0 +1,78 @@
+/* iOS-style message bubbles — har doim alohida, dumchali */
+.imessage-bubble {
+  width: max-content;
+  max-width: 100%;
+  overflow-wrap: break-word;
+  word-break: normal;
+  hyphens: none;
+  white-space: pre-wrap;
+  line-height: 1.45;
+  position: relative;
+  padding: 8px 14px;
+  border-radius: 20px;
+  margin-bottom: 4px;
+}
+.imessage-bubble::before,
+.imessage-bubble::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  height: 18px;
+}
+
+/* Qabul qilingan xabarlar */
+.imessage-from-them {
+  background-color: var(--color-zinc-200);
+  color: var(--color-zinc-900);
+}
+
+.imessage-from-them::before {
+  left: -7px;
+  width: 20px;
+  background-color: var(--color-zinc-200);
+  border-bottom-right-radius: 16px;
+}
+
+.imessage-from-them::after {
+  left: -26px;
+  width: 26px;
+  background-color: var(--chat-surface, #ffffff);
+  border-bottom-right-radius: 10px;
+}
+
+.dark .imessage-from-them::after {
+  background-color: var(--chat-surface, #1e1e1e);
+}
+
+.dark .imessage-from-them {
+  background-color: #3d444d;
+  color: #ffffff;
+}
+
+.dark .imessage-from-them::before {
+  background-color: #3d444d;
+}
+
+/* Yuborilgan xabarlar */
+.imessage-from-me {
+  color: #ffffff;
+  background: #00bbff;
+}
+
+.imessage-from-me::before {
+  right: -7px;
+  width: 20px;
+  background-color: #00bbff;
+  border-bottom-left-radius: 16px 14px;
+}
+
+.imessage-from-me::after {
+  right: -26px;
+  width: 26px;
+  background-color: var(--chat-surface, #ffffff);
+  border-bottom-left-radius: 10px;
+}
+
+.dark .imessage-from-me::after {
+  background-color: var(--chat-surface, #1e1e1e);
+}

@@ -1,0 +1,118 @@
+import { useState } from "react";
+import {
+  Icon,
+  IconClose,
+  IconMegaphone,
+  IconPencil,
+  IconPeople,
+} from "@/components/icons";
+import { cn } from "@/lib/utils";
+
+interface FabMenuItem {
+  id: string;
+  label: string;
+  icon: React.ReactNode;
+  onClick?: () => void;
+}
+
+interface SidebarFABProps {
+  className?: string;
+  onNewChannel?: () => void;
+  onNewGroup?: () => void;
+}
+
+function FabMenuItemButton({ icon, label, onClick }: Omit<FabMenuItem, "id">) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="flex w-full items-center gap-3.5 rounded-xl px-4 py-3 text-left transition-colors hover:bg-zinc-50 dark:hover:bg-zinc-800/60"
+    >
+      <span className="flex h-6 w-6 shrink-0 items-center justify-center text-zinc-900 dark:text-white">
+        {icon}
+      </span>
+      <span className="text-[15px] font-normal text-zinc-900 dark:text-white">{label}</span>
+    </button>
+  );
+}
+
+export function SidebarFAB({
+  className,
+  onNewChannel,
+  onNewGroup,
+}: SidebarFABProps) {
+  const [open, setOpen] = useState(false);
+
+  const menuItems: FabMenuItem[] = [
+    {
+      id: "channel",
+      label: "New Channel",
+      icon: <Icon icon={IconMegaphone} size={22} />,
+      onClick: () => {
+        onNewChannel?.();
+        setOpen(false);
+      },
+    },
+    {
+      id: "group",
+      label: "New Group",
+      icon: <Icon icon={IconPeople} size={22} />,
+      onClick: () => {
+        onNewGroup?.();
+        setOpen(false);
+      },
+    },
+  ];
+
+  return (
+    <>
+      {open && (
+        <div
+          className="absolute inset-0 z-10"
+          onClick={() => setOpen(false)}
+          aria-hidden
+        />
+      )}
+
+      <div className={cn("absolute bottom-5 right-5 z-20 flex flex-col items-end gap-3", className)}>
+        {open && (
+          <div
+            className={cn(
+              "mb-1 min-w-[200px] overflow-hidden rounded-2xl bg-white py-1.5 shadow-xl",
+              "dark:bg-[#2b2b2b] dark:shadow-black/50",
+              "animate-in fade-in slide-in-from-bottom-2 duration-200",
+            )}
+            role="menu"
+          >
+            {menuItems.map((item) => (
+              <FabMenuItemButton
+                key={item.id}
+                icon={item.icon}
+                label={item.label}
+                onClick={item.onClick}
+              />
+            ))}
+          </div>
+        )}
+
+        <button
+          type="button"
+          onClick={() => setOpen((prev) => !prev)}
+          className={cn(
+            "flex h-14 w-14 items-center justify-center rounded-full shadow-lg transition-all hover:scale-105",
+            "bg-[#00bbff] text-white hover:bg-[#00a3e0]",
+            open && "rotate-0",
+          )}
+          aria-label={open ? "Yopish" : "Yangi xabar"}
+          aria-expanded={open}
+        >
+          <Icon
+            icon={open ? IconClose : IconPencil}
+            size={open ? 28 : 26}
+            className="transition-transform duration-200"
+          />
+        </button>
+      </div>
+    </>
+  );
+}
