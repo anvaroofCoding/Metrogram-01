@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import {
   Icon,
   IconClose,
@@ -15,21 +16,24 @@ interface ComposerActionBarProps {
   onClose: () => void;
 }
 
-function previewText(draft: ComposerDraft): string {
+function previewText(draft: ComposerDraft, t: (key: string) => string): string {
   const { message, mode } = draft;
   if (mode === "forward") {
-    const prefix = message.senderId === getCurrentUserIdForChat() ? "You: " : "";
-    return `${prefix}${message.content || "Media"}`;
+    const prefix =
+      message.senderId === getCurrentUserIdForChat() ? `${t("composer.draft.you")} ` : "";
+    return `${prefix}${message.content || t("composer.draft.media")}`;
   }
   if (mode === "edit") return message.content;
-  return message.content || "Media";
+  return message.content || t("composer.draft.media");
 }
 
 export function ComposerActionBar({ draft, contactName, onClose }: ComposerActionBarProps) {
-  const titles = {
-    reply: "Reply",
-    edit: "Edit Message",
-    forward: "Forward Message",
+  const { t } = useTranslation();
+
+  const titleKeys = {
+    reply: "composer.draft.reply",
+    edit: "composer.draft.edit",
+    forward: "composer.draft.forward",
   } as const;
 
   const icons = {
@@ -45,11 +49,11 @@ export function ComposerActionBar({ draft, contactName, onClose }: ComposerActio
         <div className="min-w-0 border-l-2 border-[#00bbff] pl-2.5">
           <p className="text-sm font-semibold text-[#00bbff]">
             {draft.mode === "reply" && contactName
-              ? `Reply to ${contactName}`
-              : titles[draft.mode]}
+              ? t("composer.draft.replyTo", { name: contactName })
+              : t(titleKeys[draft.mode])}
           </p>
           <p className="truncate text-sm text-zinc-600 dark:text-zinc-300">
-            <AppleEmojiText text={previewText(draft)} emojiSize={16} />
+            <AppleEmojiText text={previewText(draft, t)} emojiSize={16} />
           </p>
         </div>
       </div>
@@ -57,7 +61,7 @@ export function ComposerActionBar({ draft, contactName, onClose }: ComposerActio
         type="button"
         onClick={onClose}
         className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-[#00bbff] transition hover:bg-[#00bbff]/10"
-        aria-label="Bekor qilish"
+        aria-label={t("common.cancel")}
       >
         <Icon icon={IconClose} size={20} />
       </button>

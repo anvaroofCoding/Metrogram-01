@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Icon, IconMic } from "@/components/icons";
 import { cn } from "@/lib/utils";
 import type { MessageAttachment } from "@/types/attachments";
@@ -20,6 +21,7 @@ export function VoiceMessageBubble({
   variant = "received",
   className,
 }: VoiceMessageBubbleProps) {
+  const { t } = useTranslation();
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [playing, setPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -139,7 +141,7 @@ export function VoiceMessageBubble({
         <button
           type="button"
           className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#00bbff]/10 text-[#00bbff]"
-          aria-label="Transkripsiya"
+          aria-label={t("voice.transcribe")}
         >
           <span className="text-xs font-bold">A→</span>
         </button>
@@ -161,13 +163,15 @@ export function VoiceRecordingBar({
   onCancel,
   onSend,
 }: VoiceRecordingBarProps) {
+  const { t } = useTranslation();
+
   return (
     <div className="flex items-center gap-3 px-3 py-3">
       <button
         type="button"
         onClick={onCancel}
         className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-zinc-500 transition hover:bg-zinc-200 dark:text-zinc-400 dark:hover:bg-zinc-700"
-        aria-label="Bekor qilish"
+        aria-label={t("voice.cancel")}
       >
         <Icon icon={IconMic} size={18} className="text-red-500" />
       </button>
@@ -189,7 +193,7 @@ export function VoiceRecordingBar({
         type="button"
         onClick={onSend}
         className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#00bbff] text-white transition hover:bg-[#00a3e0]"
-        aria-label="Yuborish"
+        aria-label={t("voice.send")}
       >
         ↑
       </button>

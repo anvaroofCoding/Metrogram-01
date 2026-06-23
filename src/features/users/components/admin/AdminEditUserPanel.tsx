@@ -1,4 +1,5 @@
 import { useMemo, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { compressImageFile } from "@/lib/compress-image";
 import {
   Icon,
@@ -27,6 +28,7 @@ function splitPhone(phone: string): { prefix: string; local: string } {
 }
 
 export function AdminEditUserPanel({ user, onBack, onSaved }: AdminEditUserPanelProps) {
+  const { t } = useTranslation();
   const fileRef = useRef<HTMLInputElement>(null);
   const { mutateAsync: updateUser, isLoading } = useUpdateUserMutation();
 
@@ -62,7 +64,7 @@ export function AdminEditUserPanel({ user, onBack, onSaved }: AdminEditUserPanel
     try {
       setAvatarUrl(await compressImageFile(file));
     } catch {
-      setError("Rasm yuklanmadi. Boshqa fayl tanlang.");
+      setError(t("common.photoUploadFailed"));
     }
   };
 
@@ -70,17 +72,17 @@ export function AdminEditUserPanel({ user, onBack, onSaved }: AdminEditUserPanel
     setError(null);
 
     if (!firstName.trim() || !lastName.trim()) {
-      setError("Ism va familiya majburiy");
+      setError(t("admin.editNameRequired"));
       return;
     }
 
     if (username.trim().length > 0 && username.trim().length < 3) {
-      setError("Username kamida 3 ta belgidan iborat bo'lishi kerak");
+      setError(t("admin.editUsernameMin"));
       return;
     }
 
     if (password && password.length < 6) {
-      setError("Yangi parol kamida 6 ta belgidan iborat bo'lishi kerak");
+      setError(t("admin.editPasswordMin"));
       return;
     }
 
@@ -108,7 +110,7 @@ export function AdminEditUserPanel({ user, onBack, onSaved }: AdminEditUserPanel
 
       onSaved?.();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Saqlashda xatolik");
+      setError(err instanceof Error ? err.message : t("common.saveError"));
     }
   };
 
@@ -119,12 +121,12 @@ export function AdminEditUserPanel({ user, onBack, onSaved }: AdminEditUserPanel
           type="button"
           onClick={onBack}
           className="flex h-10 w-10 items-center justify-center rounded-full text-zinc-600 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800"
-          aria-label="Orqaga"
+          aria-label={t("common.back")}
         >
           <Icon icon={IconChevronBack} size={24} />
         </button>
         <h1 className="flex-1 truncate px-2 text-center text-[17px] font-semibold text-zinc-900 dark:text-white">
-          Tahrirlash
+          {t("admin.editTitle")}
         </h1>
         <button
           type="button"
@@ -132,7 +134,7 @@ export function AdminEditUserPanel({ user, onBack, onSaved }: AdminEditUserPanel
           disabled={isLoading}
           className="rounded-full px-3 py-1.5 text-[15px] font-semibold text-[#00bbff] hover:bg-[#00bbff]/10 disabled:opacity-50"
         >
-          {isLoading ? "..." : "Saqlash"}
+          {isLoading ? "..." : t("common.save")}
         </button>
       </header>
 
@@ -142,7 +144,7 @@ export function AdminEditUserPanel({ user, onBack, onSaved }: AdminEditUserPanel
             type="button"
             onClick={() => fileRef.current?.click()}
             className="relative"
-            aria-label="Rasm yuklash"
+            aria-label={t("common.uploadPhoto")}
           >
             <ContactAvatar contact={draftContact} />
             <span className="absolute inset-0 flex items-center justify-center rounded-full bg-black/35">
@@ -166,46 +168,46 @@ export function AdminEditUserPanel({ user, onBack, onSaved }: AdminEditUserPanel
 
         <SettingsCard className="mb-3 space-y-4 p-4">
           <Input
-            label="Ism"
+            label={t("admin.firstName")}
             value={firstName}
             onChange={(e) => setFirstName(e.target.value)}
           />
           <Input
-            label="Familiya"
+            label={t("admin.lastName")}
             value={lastName}
             onChange={(e) => setLastName(e.target.value)}
           />
           <Input
-            label="Telefon"
+            label={t("admin.phone")}
             value={phoneLocal}
             onChange={(e) => setPhoneLocal(e.target.value.replace(/\D/g, ""))}
             placeholder="947932005"
           />
           <Input
-            label="Lavozim"
+            label={t("admin.position")}
             value={position}
             onChange={(e) => setPosition(e.target.value)}
           />
           <Input
-            label="Bio"
+            label={t("admin.bio")}
             value={bio}
             onChange={(e) => setBio(e.target.value)}
           />
           <Input
-            label="Username"
+            label={t("admin.username")}
             value={username}
             onChange={(e) => setUsername(e.target.value.replace(/\s/g, ""))}
           />
           <Input
-            label="Tug'ilgan yil"
+            label={t("admin.birthYear")}
             type="number"
             value={birthYear}
             onChange={(e) => setBirthYear(e.target.value)}
-            placeholder="1998"
+            placeholder={t("admin.birthYearPlaceholder")}
           />
           <div>
             <label className="mb-1.5 block px-1 text-xs font-medium text-[#00bbff]">
-              Kanallar (vergul bilan)
+              {t("admin.channels")}
             </label>
             <textarea
               value={channelsText}
@@ -219,19 +221,19 @@ export function AdminEditUserPanel({ user, onBack, onSaved }: AdminEditUserPanel
           </div>
         </SettingsCard>
 
-        <h3 className="mb-2 px-2 text-sm font-semibold text-[#00bbff]">Parolni yangilash</h3>
+        <h3 className="mb-2 px-2 text-sm font-semibold text-[#00bbff]">
+          {t("admin.passwordSection")}
+        </h3>
         <SettingsCard className="mb-3 p-4">
           <Input
-            label="Yangi parol (ixtiyoriy)"
+            label={t("admin.newPassword")}
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            placeholder="Admin reset"
+            placeholder={t("admin.passwordPlaceholder")}
           />
         </SettingsCard>
-        <p className="px-2 text-xs text-zinc-500">
-          Bo&apos;sh qoldirsangiz, foydalanuvchi paroli o&apos;zgarmaydi.
-        </p>
+        <p className="px-2 text-xs text-zinc-500">{t("admin.passwordHint")}</p>
 
         {error && (
           <p className="mt-4 px-2 text-center text-sm text-red-500">{error}</p>

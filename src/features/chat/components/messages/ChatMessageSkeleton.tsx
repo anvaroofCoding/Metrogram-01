@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 
@@ -30,11 +31,13 @@ function BubbleSkeleton({
 }
 
 export function ChatMessageSkeleton({ className }: ChatMessageSkeletonProps) {
+  const { t } = useTranslation();
+
   return (
     <div
       className={cn("space-y-4", className)}
       role="status"
-      aria-label="Xabarlar yuklanmoqda"
+      aria-label={t("chat.skeleton.messages")}
     >
       <div className="space-y-2">
         <BubbleSkeleton align="left" widthClass={RECEIVED_WIDTHS[0]} />

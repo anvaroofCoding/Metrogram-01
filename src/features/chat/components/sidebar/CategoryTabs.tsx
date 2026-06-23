@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import type { IconType } from "react-icons";
 import {
   Icon,
@@ -31,6 +32,7 @@ interface CategoryTabsProps {
 }
 
 export function CategoryTabs({ activeId, onChange, className }: CategoryTabsProps) {
+  const { t } = useTranslation();
   const scrollRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
@@ -78,7 +80,7 @@ export function CategoryTabs({ activeId, onChange, className }: CategoryTabsProp
       {canScrollLeft && (
         <button
           type="button"
-          aria-label="Chapga scroll"
+          aria-label={t("categories.scrollLeft")}
           onClick={() => scrollByStep("left")}
           className={cn(
             "absolute left-0 top-0 z-10 flex h-[calc(100%-0.5rem)] w-9 items-center justify-start pl-1",
@@ -92,7 +94,7 @@ export function CategoryTabs({ activeId, onChange, className }: CategoryTabsProp
       <div
         ref={scrollRef}
         role="tablist"
-        aria-label="Chat kategoriyalari"
+        aria-label={t("categories.ariaTablist")}
         className={cn(
           "flex gap-1 overflow-x-auto scroll-smooth px-3 pb-2 scrollbar-none",
           canScrollLeft && "pl-[31px]",
@@ -118,7 +120,7 @@ export function CategoryTabs({ activeId, onChange, className }: CategoryTabsProp
               )}
             >
               <Icon icon={CATEGORY_ICONS[cat.id]} size={14} />
-              {cat.label}
+              {t(`categories.${cat.id}`)}
             </button>
           );
         })}
@@ -127,7 +129,7 @@ export function CategoryTabs({ activeId, onChange, className }: CategoryTabsProp
       {canScrollRight && (
         <button
           type="button"
-          aria-label="O'ngga scroll"
+          aria-label={t("categories.scrollRight")}
           onClick={() => scrollByStep("right")}
           className={cn(
             "absolute right-0 top-0 z-10 flex h-[calc(100%-0.5rem)] w-9 items-center justify-end pr-1",

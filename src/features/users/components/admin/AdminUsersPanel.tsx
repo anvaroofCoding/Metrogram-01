@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Icon, IconChevronForward, IconPencil, IconSearch } from "@/components/icons";
 import { ContactAvatar } from "@/features/chat/components/create-channel/ContactAvatar";
 import { ChatListSkeleton } from "@/features/chat/components/sidebar/ChatListSkeleton";
@@ -15,6 +16,7 @@ interface AdminUsersPanelProps {
 }
 
 export function AdminUsersPanel({ onBack, onEditUser }: AdminUsersPanelProps) {
+  const { t } = useTranslation();
   const [search, setSearch] = useState("");
   useContactRealtime();
 
@@ -27,9 +29,9 @@ export function AdminUsersPanel({ onBack, onEditUser }: AdminUsersPanelProps) {
 
   return (
     <PanelShell
-      title="Barcha foydalanuvchilar"
+      title={t("admin.users")}
       onBack={onBack}
-      subtitle={`${visibleUsers.length} ta foydalanuvchi · tahrirlash uchun bosing`}
+      subtitle={t("admin.usersSubtitle", { count: visibleUsers.length })}
     >
       <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-hidden px-3 pb-4 pt-3">
         <div className="relative shrink-0">
@@ -40,7 +42,7 @@ export function AdminUsersPanel({ onBack, onEditUser }: AdminUsersPanelProps) {
           />
           <input
             type="search"
-            placeholder="Ism, username yoki telefon"
+            placeholder={t("admin.usersSearch")}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className={cn(
@@ -59,22 +61,20 @@ export function AdminUsersPanel({ onBack, onEditUser }: AdminUsersPanelProps) {
             ) : isError ? (
               <div className="flex flex-col items-center gap-3 px-4 py-10 text-center">
                 <p className="text-sm text-red-500">
-                  {error instanceof Error ? error.message : "Yuklab bo'lmadi"}
+                  {error instanceof Error ? error.message : t("common.loadFailed")}
                 </p>
                 <button
                   type="button"
                   onClick={() => void refetch()}
                   className="rounded-full bg-[#00bbff] px-5 py-2 text-sm font-medium text-white hover:bg-[#00a3e0]"
                 >
-                  Qayta urinish
+                  {t("common.retry")}
                 </button>
               </div>
             ) : visibleUsers.length === 0 ? (
               <div className="flex flex-col items-center gap-2 px-4 py-12 text-center">
-                <p className="text-sm text-zinc-500">Foydalanuvchilar topilmadi</p>
-                <p className="text-xs text-zinc-400">
-                  &quot;Foydalanuvchi qo&apos;shish&quot; orqali birinchi kontaktni yarating
-                </p>
+                <p className="text-sm text-zinc-500">{t("admin.usersEmpty")}</p>
+                <p className="text-xs text-zinc-400">{t("admin.usersEmptyHint")}</p>
               </div>
             ) : (
               visibleUsers.map((user, index) => (

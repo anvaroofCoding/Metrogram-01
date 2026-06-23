@@ -1,4 +1,6 @@
 import { useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
 import { Icon, IconDocument, IconLink, IconMic, IconNotifications, IconQrCode } from "@/components/icons";
 import { ToggleSwitch } from "@/components/ui/toggle-switch";
 import { ImageLightbox } from "@/components/ui/image-lightbox";
@@ -9,14 +11,17 @@ import {
   formatVoiceDuration,
   type ConversationMediaItem,
 } from "@/features/chat/lib/conversation-message-filters";
+import { getInviteJoinPath } from "@/lib/invite-links";
 import { cn } from "@/lib/utils";
 import type { GroupMember } from "./demo-data";
 
-const USER_TABS = ["Media", "Files", "Links", "Voice"] as const;
-const GROUP_TABS = ["Members", "Media", "Files", "Links"] as const;
+export const USER_TABS = ["media", "files", "links", "voice"] as const;
+export const GROUP_TABS = ["members", "media", "files", "links"] as const;
+export const CHANNEL_TABS = ["members", "media", "files", "links", "voice"] as const;
 
 type UserTab = (typeof USER_TABS)[number];
 type GroupTab = (typeof GROUP_TABS)[number];
+type ChannelTab = (typeof CHANNEL_TABS)[number];
 
 interface InfoTabsProps {
   tabs: readonly string[];
@@ -25,6 +30,8 @@ interface InfoTabsProps {
 }
 
 export function InfoTabs({ tabs, active, onChange }: InfoTabsProps) {
+  const { t } = useTranslation();
+
   return (
     <div className="z-10 flex shrink-0 gap-1 overflow-x-auto border-b border-zinc-200/80 bg-[#f4f4f5] px-3 py-2 scrollbar-none dark:border-zinc-800 dark:bg-[#1c1c1e]">
       {tabs.map((tab) => (
@@ -39,7 +46,7 @@ export function InfoTabs({ tabs, active, onChange }: InfoTabsProps) {
               : "text-zinc-500 hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-300",
           )}
         >
-          {tab}
+          {t(`info.tabs.${tab}`)}
         </button>
       ))}
     </div>
@@ -51,6 +58,8 @@ interface UsernameRowProps {
 }
 
 export function UsernameRow({ username }: UsernameRowProps) {
+  const { t } = useTranslation();
+
   return (
     <div className="flex items-center gap-3 border-b border-zinc-100 px-4 py-3.5 dark:border-zinc-700">
       <span className="text-lg text-zinc-400">@</span>
@@ -58,7 +67,7 @@ export function UsernameRow({ username }: UsernameRowProps) {
         <p className="truncate text-[15px] font-semibold text-zinc-900 dark:text-white">
           {username}
         </p>
-        <p className="text-xs text-zinc-400">Username</p>
+        <p className="text-xs text-zinc-400">{t("info.username")}</p>
       </div>
       <Icon icon={IconQrCode} size={22} className="shrink-0 text-zinc-400" />
     </div>
@@ -71,14 +80,18 @@ interface NotificationsRowProps {
 }
 
 export function NotificationsRow({ enabled, onToggle }: NotificationsRowProps) {
+  const { t } = useTranslation();
+
   return (
     <div className="flex items-center gap-3 px-4 py-3.5">
       <Icon icon={IconNotifications} size={22} className="shrink-0 text-zinc-400" />
-      <span className="flex-1 text-[15px] text-zinc-900 dark:text-white">Notifications</span>
+      <span className="flex-1 text-[15px] text-zinc-900 dark:text-white">
+        {t("info.notifications")}
+      </span>
       <ToggleSwitch
         enabled={enabled}
         onToggle={onToggle}
-        aria-label="Notifications"
+        aria-label={t("info.notifications")}
       />
     </div>
   );
@@ -91,6 +104,8 @@ function MemberRow({
   member: GroupMember;
   onClick?: (memberId: string) => void;
 }) {
+  const { t } = useTranslation();
+
   const content = (
     <>
       <div
@@ -106,7 +121,7 @@ function MemberRow({
         <p className="truncate text-xs text-zinc-500">{member.status}</p>
       </div>
       {member.isOwner && (
-        <span className="shrink-0 text-xs text-zinc-400">owner</span>
+        <span className="shrink-0 text-xs text-zinc-400">{t("info.memberOwner")}</span>
       )}
     </>
   );
@@ -131,10 +146,12 @@ function EmptyTabState({ label }: { label: string }) {
 }
 
 function LoadingTabState() {
-  return <p className="px-4 py-8 text-center text-sm text-zinc-400">Yuklanmoqda...</p>;
+  const { t } = useTranslation();
+  return <p className="px-4 py-8 text-center text-sm text-zinc-400">{t("common.loading")}</p>;
 }
 
 function MediaGrid({ items }: { items: ConversationMediaItem[] }) {
+  const { t } = useTranslation();
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [startIndex, setStartIndex] = useState(0);
 
@@ -146,7 +163,7 @@ function MediaGrid({ items }: { items: ConversationMediaItem[] }) {
   }));
 
   if (items.length === 0) {
-    return <EmptyTabState label="Hali media yo'q" />;
+    return <EmptyTabState label={t("info.mediaEmpty")} />;
   }
 
   return (
@@ -181,7 +198,7 @@ function MediaGrid({ items }: { items: ConversationMediaItem[] }) {
             {item.kind === "video" && (
               <span className="pointer-events-none absolute inset-0 flex items-center justify-center bg-black/25">
                 <span className="rounded-full bg-black/55 px-2 py-1 text-[10px] font-medium text-white">
-                  ▶ Video
+                  {t("info.videoBadge")}
                 </span>
               </span>
             )}
@@ -211,7 +228,8 @@ export function TabContent({
   conversationId,
   onMemberClick,
 }: TabContentProps) {
-  const needsMessages = activeTab !== "Members";
+  const { t } = useTranslation();
+  const needsMessages = activeTab !== "members";
   const { data, isLoading } = useGetMessagesQuery(
     { conversationId: conversationId! },
     { skip: !conversationId || !needsMessages },
@@ -222,11 +240,11 @@ export function TabContent({
     [data?.items],
   );
 
-  if (activeTab === "Members") {
+  if (activeTab === "members") {
     return (
       <div className="py-1">
         {members.length === 0 ? (
-          <p className="px-4 py-6 text-center text-sm text-zinc-400">A&apos;zolar yo&apos;q</p>
+          <p className="px-4 py-6 text-center text-sm text-zinc-400">{t("info.membersEmpty")}</p>
         ) : (
           members.map((m) => (
             <MemberRow key={m.id} member={m} onClick={onMemberClick} />
@@ -237,44 +255,57 @@ export function TabContent({
   }
 
   if (!conversationId) {
-    return <EmptyTabState label="Suhbat tanlanmagan" />;
+    return <EmptyTabState label={t("info.noConversation")} />;
   }
 
   if (isLoading) {
     return <LoadingTabState />;
   }
 
-  if (activeTab === "Media") {
+  if (activeTab === "media") {
     return <MediaGrid items={filtered.media} />;
   }
 
-  if (activeTab === "Links") {
+  if (activeTab === "links") {
     if (filtered.links.length === 0) {
-      return <EmptyTabState label="Hali havolalar yo'q" />;
+      return <EmptyTabState label={t("info.linksEmpty")} />;
     }
 
     return (
       <ul className="divide-y divide-zinc-100 dark:divide-zinc-700">
-        {filtered.links.map((link) => (
-          <li key={link.id}>
-            <a
-              href={link.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-3 px-4 py-3 text-[#00bbff] hover:bg-zinc-50 dark:hover:bg-zinc-800/50"
-            >
-              <Icon icon={IconLink} size={20} className="shrink-0 text-zinc-400" />
-              <span className="min-w-0 flex-1 truncate text-sm">{link.title}</span>
-            </a>
-          </li>
-        ))}
+        {filtered.links.map((link) => {
+          const joinPath = getInviteJoinPath(link.url);
+          const rowClassName =
+            "flex items-center gap-3 px-4 py-3 text-[#00bbff] hover:bg-zinc-50 dark:hover:bg-zinc-800/50";
+
+          return (
+            <li key={link.id}>
+              {joinPath ? (
+                <Link to={joinPath} className={rowClassName}>
+                  <Icon icon={IconLink} size={20} className="shrink-0 text-zinc-400" />
+                  <span className="min-w-0 flex-1 truncate text-sm">{link.title}</span>
+                </Link>
+              ) : (
+                <a
+                  href={link.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={rowClassName}
+                >
+                  <Icon icon={IconLink} size={20} className="shrink-0 text-zinc-400" />
+                  <span className="min-w-0 flex-1 truncate text-sm">{link.title}</span>
+                </a>
+              )}
+            </li>
+          );
+        })}
       </ul>
     );
   }
 
-  if (activeTab === "Voice") {
+  if (activeTab === "voice") {
     if (filtered.voice.length === 0) {
-      return <EmptyTabState label="Hali ovozli xabarlar yo'q" />;
+      return <EmptyTabState label={t("info.voiceEmpty")} />;
     }
 
     return (
@@ -283,7 +314,7 @@ export function TabContent({
           <li key={v.id} className="flex items-center gap-3 px-4 py-3">
             <Icon icon={IconMic} size={20} className="text-[#00bbff]" />
             <span className="flex-1 text-sm text-zinc-900 dark:text-white">
-              Ovozli xabar
+              {t("message.attachment.voice")}
             </span>
             <span className="text-xs text-zinc-400">
               {formatVoiceDuration(v.duration)} · {formatMessageDate(v.createdAt)}
@@ -294,9 +325,9 @@ export function TabContent({
     );
   }
 
-  if (activeTab === "Files") {
+  if (activeTab === "files") {
     if (filtered.files.length === 0) {
-      return <EmptyTabState label="Hali fayllar yo'q" />;
+      return <EmptyTabState label={t("info.filesEmpty")} />;
     }
 
     return (
@@ -326,5 +357,4 @@ export function TabContent({
   return null;
 }
 
-export { USER_TABS, GROUP_TABS };
-export type { UserTab, GroupTab };
+export type { UserTab, GroupTab, ChannelTab };

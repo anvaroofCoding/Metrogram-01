@@ -1,9 +1,11 @@
 import { useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Icon, IconPersonAdd } from "@/components/icons";
 import { AddMembersPanel } from "@/features/chat/components/members/AddMembersPanel";
 import { InfoTabs, TabContent } from "@/features/chat/components/user-info/InfoTabContent";
 import { InfoCard } from "@/features/chat/components/user-info/ProfileHero";
-import { buildConversationMembers, getChannelMemberStats } from "@/features/chat/lib/conversation-members";
+import { buildConversationMembers, getChannelMemberStats, getConversationMemberCount } from "@/features/chat/lib/conversation-members";
+import { translate } from "@/i18n/translate";
 import { useGetContactsQuery } from "@/features/users/api/usersApi";
 import type { Contact, Conversation } from "@/types/chat";
 
@@ -24,6 +26,7 @@ export function ConversationMembersSection({
   onMemberClick,
   onConversationUpdated,
 }: ConversationMembersSectionProps) {
+  const { t } = useTranslation();
   const [addMembersOpen, setAddMembersOpen] = useState(false);
   const { data: contacts = [] } = useGetContactsQuery({}, { pollingInterval: 8000 });
 
@@ -36,6 +39,7 @@ export function ConversationMembersSection({
     return (
       <AddMembersPanel
         conversation={conversation}
+        contacts={contacts}
         onBack={() => setAddMembersOpen(false)}
         onAdded={onConversationUpdated}
       />
@@ -55,12 +59,12 @@ export function ConversationMembersSection({
         />
       </InfoCard>
 
-      {activeTab === "Members" && (
+      {activeTab === "members" && (
         <button
           type="button"
           onClick={() => setAddMembersOpen(true)}
           className="absolute bottom-6 right-6 flex h-14 w-14 items-center justify-center rounded-full bg-[#00bbff] text-white shadow-lg hover:bg-[#00a3e0]"
-          aria-label="A'zo qo'shish"
+          aria-label={t("info.membersAdd")}
         >
           <Icon icon={IconPersonAdd} size={26} />
         </button>
@@ -76,6 +80,6 @@ export function getMembersSubtitle(
   if (conversation.category === "channel") {
     return getChannelMemberStats(conversation, contacts);
   }
-  const count = conversation.participantIds.length;
-  return count === 1 ? "1 member" : `${count} members`;
+  const count = getConversationMemberCount(conversation, contacts);
+  return translate("info.membersCount", { count });
 }

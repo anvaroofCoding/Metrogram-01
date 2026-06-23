@@ -3,6 +3,8 @@ import {
   filterVisibleConversations,
   getDisplayConversation,
 } from "@/features/chat/lib/conversation-display";
+import { getCurrentUserId } from "@/features/auth/auth-session";
+import { formatMessagePreview } from "@/lib/parse-message-content";
 import type { ChatCategoryId } from "@/features/chat/constants/categories";
 import type { Contact, Conversation } from "@/types/chat";
 
@@ -26,7 +28,7 @@ function matchesConversation(conversation: Conversation, query: string): boolean
   if (!q) return true;
 
   const display = getDisplayConversation(conversation);
-  const preview = conversation.lastMessage?.content ?? "";
+  const preview = formatMessagePreview(conversation.lastMessage?.content ?? "");
 
   return (
     display.title.toLowerCase().includes(q) ||
@@ -62,8 +64,9 @@ export function searchConversations(
   conversations: Conversation[],
   query: string,
   tab: GlobalSearchTab,
+  contacts: Contact[] = [],
 ): Conversation[] {
-  const visible = filterVisibleConversations(conversations);
+  const visible = filterVisibleConversations(conversations, getCurrentUserId(), contacts);
   const q = normalizeQuery(query);
 
   return visible.filter((conversation) => {
@@ -94,10 +97,10 @@ export function buildGlobalSearchSections(
 ): GlobalSearchSections {
   const q = normalizeQuery(query);
 
-  const personal = searchConversations(conversations, q, "personal");
-  const groups = searchConversations(conversations, q, "group");
-  const channels = searchConversations(conversations, q, "channel");
-  const bots = searchConversations(conversations, q, "bot");
+  const personal = searchConversations(conversations, q, "personal", contacts);
+  const groups = searchConversations(conversations, q, "group", contacts);
+  const channels = searchConversations(conversations, q, "channel", contacts);
+  const bots = searchConversations(conversations, q, "bot", contacts);
 
   return {
     contacts: searchContacts(contacts, q),

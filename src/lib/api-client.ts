@@ -1,3 +1,6 @@
+import { resolveApiUrl } from "@/config/api-url";
+import { translate } from "@/i18n/translate";
+
 export interface ApiEnvelope<T> {
   success: boolean;
   data: T;
@@ -29,7 +32,7 @@ export async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> 
 
   let response: Response;
   try {
-    response = await fetch(path, {
+    response = await fetch(resolveApiUrl(path), {
       ...init,
       headers,
     });
@@ -44,7 +47,7 @@ export async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> 
       );
     }
     if (response.status === 413) {
-      throw new Error("Rasm juda katta. Iltimos kichikroq rasm tanlang.");
+      throw new Error(translate("errors.imageTooLarge"));
     }
     if (response.status === 429) {
       throw new Error(

@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import { Icon, IconChevronBack, IconClose, IconSearch } from "@/components/icons";
 import { ContactAvatar } from "@/features/chat/components/create-channel/ContactAvatar";
 import { ChatListItem } from "@/features/chat/components/sidebar/ChatListItem";
@@ -28,6 +29,15 @@ interface GlobalSearchPanelProps {
   onContactSelect: (contact: Contact) => void;
 }
 
+const TAB_LABEL_KEYS: Record<GlobalSearchTab, string> = {
+  all: "categories.all",
+  personal: "search.conversations",
+  contacts: "search.contacts",
+  group: "search.groups",
+  channel: "search.channels",
+  bot: "search.bots",
+};
+
 function SectionTitle({ children }: { children: string }) {
   return (
     <p className="px-3 pb-1 pt-3 text-xs font-semibold uppercase tracking-wide text-zinc-400">
@@ -39,17 +49,17 @@ function SectionTitle({ children }: { children: string }) {
 function RecentContactsRow({
   contacts,
   onContactSelect,
+  title,
 }: {
   contacts: Contact[];
   onContactSelect: (contact: Contact) => void;
+  title: string;
 }) {
   if (contacts.length === 0) return null;
 
   return (
     <div className="shrink-0 border-b border-zinc-100 px-3 pb-3 dark:border-zinc-800">
-      <p className="pb-2 text-xs font-semibold uppercase tracking-wide text-zinc-400">
-        Tez-tez ishlatilgan
-      </p>
+      <p className="pb-2 text-xs font-semibold uppercase tracking-wide text-zinc-400">{title}</p>
       <div className="flex gap-3 overflow-x-auto pb-1 scrollbar-none">
         {contacts.slice(0, 12).map((contact) => (
           <button
@@ -108,6 +118,8 @@ export function GlobalSearchPanel({
   onConversationSelect,
   onContactSelect,
 }: GlobalSearchPanelProps) {
+  const { t } = useTranslation();
+
   const sections = useMemo(
     () => buildGlobalSearchSections(conversations, contacts, query),
     [conversations, contacts, query],
@@ -119,17 +131,17 @@ export function GlobalSearchPanel({
   );
 
   const tabConversations = useMemo(
-    () => searchConversations(conversations, query, activeTab),
-    [conversations, query, activeTab],
+    () => searchConversations(conversations, query, activeTab, contacts),
+    [conversations, query, activeTab, contacts],
   );
 
   const showRecent = !query.trim();
 
   const recentConversations = useMemo(() => {
-    return searchConversations(conversations, "", "all")
+    return searchConversations(conversations, "", "all", contacts)
       .sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime())
       .slice(0, 10);
-  }, [conversations]);
+  }, [conversations, contacts]);
 
   const renderConversationList = (items: Conversation[]) =>
     items.map((conversation) => (
@@ -146,19 +158,14 @@ export function GlobalSearchPanel({
       if (recentConversations.length === 0) {
         return (
           <div className="flex flex-1 flex-col items-center justify-center gap-2 px-6 py-12 text-center">
-            <p className="text-sm text-zinc-500 dark:text-zinc-400">
-              Qidirish uchun matn kiriting
-            </p>
-            <p className="text-xs text-zinc-400 dark:text-zinc-500">
-              Kontakt, suhbat, guruh, kanal yoki bot nomi
-            </p>
+            <p className="text-sm text-zinc-500 dark:text-zinc-400">{t("common.search")}</p>
           </div>
         );
       }
 
       return (
         <>
-          <SectionTitle>So&apos;nggi suhbatlar</SectionTitle>
+          <SectionTitle>{t("search.recent")}</SectionTitle>
           {renderConversationList(recentConversations)}
         </>
       );
@@ -167,10 +174,7 @@ export function GlobalSearchPanel({
     if (!hasGlobalSearchResults(sections)) {
       return (
         <div className="flex flex-1 flex-col items-center justify-center gap-2 px-6 py-12 text-center">
-          <p className="text-sm text-zinc-500 dark:text-zinc-400">Natija topilmadi</p>
-          <p className="text-xs text-zinc-400 dark:text-zinc-500">
-            Kontakt, suhbat, guruh, kanal yoki bot nomini kiriting
-          </p>
+          <p className="text-sm text-zinc-500 dark:text-zinc-400">{t("search.noResults")}</p>
         </div>
       );
     }
@@ -179,7 +183,7 @@ export function GlobalSearchPanel({
       <>
         {sections.contacts.length > 0 && (
           <>
-            <SectionTitle>Kontaktlar</SectionTitle>
+            <SectionTitle>{t("search.contacts")}</SectionTitle>
             {sections.contacts.map((contact) => (
               <ContactRow
                 key={contact.id}
@@ -191,25 +195,25 @@ export function GlobalSearchPanel({
         )}
         {sections.personal.length > 0 && (
           <>
-            <SectionTitle>Suhbatlar</SectionTitle>
+            <SectionTitle>{t("search.conversations")}</SectionTitle>
             {renderConversationList(sections.personal)}
           </>
         )}
         {sections.groups.length > 0 && (
           <>
-            <SectionTitle>Guruhlar</SectionTitle>
+            <SectionTitle>{t("search.groups")}</SectionTitle>
             {renderConversationList(sections.groups)}
           </>
         )}
         {sections.channels.length > 0 && (
           <>
-            <SectionTitle>Kanallar</SectionTitle>
+            <SectionTitle>{t("search.channels")}</SectionTitle>
             {renderConversationList(sections.channels)}
           </>
         )}
         {sections.bots.length > 0 && (
           <>
-            <SectionTitle>Botlar</SectionTitle>
+            <SectionTitle>{t("search.bots")}</SectionTitle>
             {renderConversationList(sections.bots)}
           </>
         )}
@@ -222,7 +226,7 @@ export function GlobalSearchPanel({
       if (tabContacts.length === 0) {
         return (
           <div className="flex flex-1 flex-col items-center justify-center gap-2 px-6 py-12 text-center">
-            <p className="text-sm text-zinc-500 dark:text-zinc-400">Kontakt topilmadi</p>
+            <p className="text-sm text-zinc-500 dark:text-zinc-400">{t("search.noContact")}</p>
           </div>
         );
       }
@@ -238,7 +242,7 @@ export function GlobalSearchPanel({
     if (tabConversations.length === 0) {
       return (
         <div className="flex flex-1 flex-col items-center justify-center gap-2 px-6 py-12 text-center">
-          <p className="text-sm text-zinc-500 dark:text-zinc-400">Natija topilmadi</p>
+          <p className="text-sm text-zinc-500 dark:text-zinc-400">{t("search.noResults")}</p>
         </div>
       );
     }
@@ -253,7 +257,7 @@ export function GlobalSearchPanel({
           type="button"
           onClick={onClose}
           className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-zinc-600 transition hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800"
-          aria-label="Orqaga"
+          aria-label={t("common.back")}
         >
           <Icon icon={IconChevronBack} size={24} />
         </button>
@@ -267,7 +271,7 @@ export function GlobalSearchPanel({
           <input
             type="search"
             autoFocus
-            placeholder="Qidirish"
+            placeholder={t("common.search")}
             value={query}
             onChange={(e) => onQueryChange(e.target.value)}
             className={cn(
@@ -282,7 +286,7 @@ export function GlobalSearchPanel({
               type="button"
               onClick={() => onQueryChange("")}
               className="absolute right-2 top-1/2 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-full text-zinc-400 hover:bg-zinc-200 dark:hover:bg-zinc-700"
-              aria-label="Tozalash"
+              aria-label={t("common.clear")}
             >
               <Icon icon={IconClose} size={16} />
             </button>
@@ -303,13 +307,17 @@ export function GlobalSearchPanel({
                 : "text-zinc-600 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800",
             )}
           >
-            {tab.label}
+            {t(TAB_LABEL_KEYS[tab.id])}
           </button>
         ))}
       </div>
 
       {showRecent && (
-        <RecentContactsRow contacts={tabContacts} onContactSelect={onContactSelect} />
+        <RecentContactsRow
+          contacts={tabContacts}
+          onContactSelect={onContactSelect}
+          title={t("search.contacts")}
+        />
       )}
 
       <div className="min-h-0 flex-1 overflow-y-auto">

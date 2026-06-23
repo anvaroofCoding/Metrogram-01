@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Icon, IconEmoji, IconSearch } from "@/components/icons";
 import { cn } from "@/lib/utils";
 import {
@@ -24,6 +25,7 @@ export function EmojiStickerPicker({
   onDelete,
   className,
 }: EmojiStickerPickerProps) {
+  const { t } = useTranslation();
   const [tab, setTab] = useState<PickerTab>("emoji");
   const [query, setQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState(EMOJI_CATEGORIES[1]?.id ?? "smileys");
@@ -47,7 +49,7 @@ export function EmojiStickerPicker({
       <button
         type="button"
         className="fixed inset-0 z-40"
-        aria-label="Yopish"
+        aria-label={t("common.close")}
         onClick={onClose}
       />
 
@@ -109,7 +111,7 @@ export function EmojiStickerPicker({
               type="search"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search Emoji"
+              placeholder={t("composer.emojiSearch")}
               className={cn(
                 "w-full rounded-lg py-1.5 pl-8 pr-2.5 text-sm outline-none",
                 "bg-white text-zinc-900 placeholder:text-zinc-400",
@@ -167,7 +169,7 @@ export function EmojiStickerPicker({
                   ? "bg-[#00bbff]/15 text-[#00bbff]"
                   : "text-zinc-500 dark:text-zinc-400",
               )}
-              aria-label="Emoji"
+              aria-label={t("composer.emojiTab")}
             >
               <Icon icon={IconEmoji} size={18} />
             </button>
@@ -180,7 +182,7 @@ export function EmojiStickerPicker({
                   ? "bg-[#00bbff]/15 text-[#00bbff]"
                   : "text-zinc-500 dark:text-zinc-400",
               )}
-              aria-label="Stickers"
+              aria-label={t("composer.stickersTab")}
             >
               <AppleEmoji emoji="🎨" size={16} />
             </button>
@@ -190,7 +192,7 @@ export function EmojiStickerPicker({
             type="button"
             onClick={onDelete}
             className="flex h-7 w-7 items-center justify-center rounded-md text-zinc-500 transition hover:bg-white dark:text-zinc-400 dark:hover:bg-zinc-800"
-            aria-label="O'chirish"
+            aria-label={t("composer.delete")}
           >
             ⌫
           </button>

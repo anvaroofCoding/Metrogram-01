@@ -1,4 +1,5 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
+import { useTranslation } from "react-i18next";
 import {
   Icon,
   IconCheckDone,
@@ -16,6 +17,8 @@ import { resolveOutgoingStatus } from "@/features/chat/lib/message-status";
 import type { MessageMenuAction } from "@/features/chat/lib/message-actions";
 import { messageHasDownloadableMedia } from "@/features/chat/lib/reactions";
 import { MessageStatusIcon } from "@/features/chat/components/messages/MessageStatusIcon";
+import { getIntlLocale } from "@/i18n/config";
+import { useAppLocale } from "@/i18n/useAppLocale";
 import { cn } from "@/lib/utils";
 import type { Message } from "@/types/chat";
 import { getCurrentUserIdForChat } from "@/features/chat/api/chatApi";
@@ -30,36 +33,9 @@ interface MessageContextMenuProps {
   onClose: () => void;
 }
 
-const MENU_ITEMS: Array<{
-  action: MessageMenuAction;
-  label: string;
-  icon: typeof IconTrash;
-  danger?: boolean;
-  show?: (message: Message, isOwn: boolean) => boolean;
-}> = [
-  { action: "reply", label: "Reply", icon: IconReply },
-  { action: "pin", label: "Pin", icon: IconPin },
-  {
-    action: "download",
-    label: "Download",
-    icon: IconDownload,
-    show: (message) => messageHasDownloadableMedia(message),
-  },
-  { action: "forward", label: "Forward", icon: IconForward },
-  { action: "select", label: "Select", icon: IconSelect },
-  { action: "delete", label: "Delete", icon: IconTrash, danger: true },
-  {
-    action: "edit",
-    label: "Edit",
-    icon: IconPencil,
-    show: (_message, isOwn) => isOwn,
-  },
-  { action: "copy", label: "Copy", icon: IconCopy, show: (message) => Boolean(message.content.trim()) },
-];
-
-function formatMenuDate(iso: string): string {
+function formatMenuDate(iso: string, intlLocale: string): string {
   const date = new Date(iso);
-  return date.toLocaleString("en-US", {
+  return date.toLocaleString(intlLocale, {
     month: "short",
     day: "numeric",
     hour: "numeric",
@@ -76,9 +52,47 @@ export function MessageContextMenu({
   onReaction,
   onClose,
 }: MessageContextMenuProps) {
+  const { t } = useTranslation();
+  const { locale } = useAppLocale();
+  const intlLocale = getIntlLocale(locale);
   const ref = useRef<HTMLDivElement>(null);
   const isOwn = message.senderId === getCurrentUserIdForChat();
   const status = isOwn ? resolveOutgoingStatus(message, peerLastReadAt) : null;
+
+  const menuItems = useMemo(
+    (): Array<{
+      action: MessageMenuAction;
+      labelKey: string;
+      icon: typeof IconTrash;
+      danger?: boolean;
+      show?: (message: Message, isOwn: boolean) => boolean;
+    }> => [
+      { action: "reply", labelKey: "message.menu.reply", icon: IconReply },
+      { action: "pin", labelKey: "message.menu.pin", icon: IconPin },
+      {
+        action: "download",
+        labelKey: "message.menu.download",
+        icon: IconDownload,
+        show: (msg) => messageHasDownloadableMedia(msg),
+      },
+      { action: "forward", labelKey: "message.menu.forward", icon: IconForward },
+      { action: "select", labelKey: "message.menu.select", icon: IconSelect },
+      { action: "delete", labelKey: "message.menu.delete", icon: IconTrash, danger: true },
+      {
+        action: "edit",
+        labelKey: "message.menu.edit",
+        icon: IconPencil,
+        show: (_msg, own) => own,
+      },
+      {
+        action: "copy",
+        labelKey: "message.menu.copy",
+        icon: IconCopy,
+        show: (msg) => Boolean(msg.content.trim()),
+      },
+    ],
+    [],
+  );
 
   useEffect(() => {
     const onPointerDown = (event: MouseEvent) => {
@@ -106,7 +120,7 @@ export function MessageContextMenu({
     el.style.top = `${Math.min(y, maxY)}px`;
   }, [x, y]);
 
-  const visibleItems = MENU_ITEMS.filter(
+  const visibleItems = menuItems.filter(
     (item) => item.show?.(message, isOwn) ?? true,
   );
 
@@ -133,7 +147,7 @@ export function MessageContextMenu({
             <Icon icon={IconCheckDone} size={14} className="text-zinc-300" />
           )}
           <span className="text-sm text-zinc-500 dark:text-zinc-400">
-            {formatMenuDate(message.createdAt)}
+            {formatMenuDate(message.createdAt, intlLocale)}
           </span>
         </div>
 
@@ -159,7 +173,7 @@ export function MessageContextMenu({
                 size={20}
                 className={item.danger ? "text-red-500" : "text-zinc-500 dark:text-zinc-400"}
               />
-              {item.label}
+              {t(item.labelKey)}
             </button>
           ))}
         </div>

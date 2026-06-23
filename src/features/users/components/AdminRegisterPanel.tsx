@@ -1,4 +1,5 @@
 import { useMemo, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   Icon,
   IconAdd,
@@ -21,6 +22,7 @@ interface AdminRegisterPanelProps {
 }
 
 export function AdminRegisterPanel({ onBack, onRegistered }: AdminRegisterPanelProps) {
+  const { t } = useTranslation();
   const [country, setCountry] = useState<Country>(DEFAULT_COUNTRY);
   const [phoneLocal, setPhoneLocal] = useState("");
   const [firstName, setFirstName] = useState("");
@@ -57,7 +59,7 @@ export function AdminRegisterPanel({ onBack, onRegistered }: AdminRegisterPanelP
     try {
       setAvatarUrl(await compressImageFile(file));
     } catch {
-      setError("Rasm yuklanmadi. Boshqa fayl tanlang.");
+      setError(t("common.photoUploadFailed"));
     }
   };
 
@@ -101,7 +103,7 @@ export function AdminRegisterPanel({ onBack, onRegistered }: AdminRegisterPanelP
       setAvatarUrl(undefined);
       onRegistered?.();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Ro'yxatdan o'tishda xatolik");
+      setError(err instanceof Error ? err.message : t("common.saveError"));
     }
   };
 
@@ -112,19 +114,19 @@ export function AdminRegisterPanel({ onBack, onRegistered }: AdminRegisterPanelP
           type="button"
           onClick={onBack}
           className="flex h-10 w-10 items-center justify-center rounded-full text-zinc-600 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800"
-          aria-label="Orqaga"
+          aria-label={t("common.back")}
         >
           <Icon icon={IconChevronBack} size={24} />
         </button>
         <h1 className="flex-1 text-center text-[17px] font-semibold text-zinc-900 dark:text-white">
-          Foydalanuvchi qo&apos;shish
+          {t("admin.register")}
         </h1>
         <div className="w-10" />
       </header>
 
       <div className="flex-1 overflow-y-auto px-4 pb-6">
         <p className="mb-4 text-center text-sm text-zinc-500 dark:text-zinc-400">
-          Foydalanuvchini ro&apos;yxatga oling — kontaktlar ro&apos;yxatida ko&apos;rinadi
+          {t("admin.services.registerDesc")}
         </p>
 
         <div className="mb-5 flex justify-center">
@@ -158,22 +160,22 @@ export function AdminRegisterPanel({ onBack, onRegistered }: AdminRegisterPanelP
 
           <div className="grid grid-cols-2 gap-3">
             <Input
-              label="Ism"
-              placeholder="Ism"
+              label={t("profile.name")}
+              placeholder={t("profile.name")}
               value={firstName}
               onChange={(e) => setFirstName(e.target.value)}
             />
             <Input
-              label="Familiya"
-              placeholder="Familiya"
+              label={t("profile.lastName")}
+              placeholder={t("profile.lastName")}
               value={lastName}
               onChange={(e) => setLastName(e.target.value)}
             />
           </div>
 
           <Input
-            label="Lavozimi"
-            placeholder="Lavozimi"
+            label={t("profile.position")}
+            placeholder={t("profile.positionPlaceholder")}
             value={position}
             onChange={(e) => setPosition(e.target.value)}
           />
@@ -183,12 +185,12 @@ export function AdminRegisterPanel({ onBack, onRegistered }: AdminRegisterPanelP
               htmlFor="user-bio"
               className="absolute -top-2.5 left-3 z-10 bg-white px-1 text-xs font-medium text-[#00bbff] dark:bg-[#1e1e1e]"
             >
-              Bio
+              {t("profile.bioOptional")}
             </label>
             <textarea
               id="user-bio"
               rows={3}
-              placeholder="Bio"
+              placeholder={t("profile.bioOptional")}
               value={bio}
               onChange={(e) => setBio(e.target.value)}
               className={cn(
@@ -200,33 +202,33 @@ export function AdminRegisterPanel({ onBack, onRegistered }: AdminRegisterPanelP
           </div>
 
           <Input
-            label="Username"
+            label={t("profile.usernameOptional")}
             placeholder="username"
             value={username}
             onChange={(e) => setUsername(e.target.value.replace(/[^a-zA-Z0-9_]/g, ""))}
           />
 
           <Input
-            label="Parol"
+            label={t("auth.password")}
             type="password"
-            placeholder="Kamida 6 ta belgi"
+            placeholder={t("admin.passwordMinPlaceholder")}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             autoComplete="new-password"
           />
 
           <Input
-            label="Parolni tasdiqlash"
+            label={t("admin.confirmPassword")}
             type="password"
-            placeholder="Parolni qayta kiriting"
+            placeholder={t("admin.confirmPasswordPlaceholder")}
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
             autoComplete="new-password"
           />
 
           <Input
-            label="Tug'ilgan yili"
-            placeholder="1998"
+            label={t("admin.birthYear")}
+            placeholder={t("admin.birthYearPlaceholder")}
             type="number"
             min={1900}
             max={2100}
@@ -239,12 +241,12 @@ export function AdminRegisterPanel({ onBack, onRegistered }: AdminRegisterPanelP
               htmlFor="user-channels"
               className="absolute -top-2.5 left-3 z-10 bg-white px-1 text-xs font-medium text-[#00bbff] dark:bg-[#1e1e1e]"
             >
-              Kanallar
+              {t("profile.channel")}
             </label>
             <textarea
               id="user-channels"
               rows={2}
-              placeholder="Kanal nomlari (vergul yoki yangi qator bilan)"
+              placeholder={t("admin.channelNamesPlaceholder")}
               value={channelsText}
               onChange={(e) => setChannelsText(e.target.value)}
               className={cn(
@@ -267,7 +269,7 @@ export function AdminRegisterPanel({ onBack, onRegistered }: AdminRegisterPanelP
             disabled={!canSubmit || isLoading}
             onClick={handleSubmit}
           >
-            {isLoading ? "Saqlanmoqda..." : "Ro'yxatga olish"}
+            {isLoading ? t("common.loading") : t("admin.register")}
           </Button>
         </div>
       </div>

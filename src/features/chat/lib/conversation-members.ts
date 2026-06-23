@@ -1,6 +1,8 @@
 import { getCurrentUserId } from "@/features/auth/auth-session";
-import { buildContactMap } from "@/features/chat/lib/conversation-display";
+import { buildContactMap, isSelfConversation } from "@/features/chat/lib/conversation-display";
+import { isSameUserId } from "@/features/chat/lib/personal-conversation";
 import { pickAvatarColor } from "@/features/users/lib/user-mappers";
+import { translate } from "@/i18n/translate";
 import type { GroupMember } from "@/features/chat/components/user-info/demo-data";
 import type { Contact, Conversation } from "@/types/chat";
 
@@ -27,31 +29,44 @@ export function getChannelMemberStats(
 ): string {
   const total = conversation.subscriberCount ?? conversation.participantIds.length;
   const online = countOnlineMembers(conversation, contacts, currentUserId);
-  return `${formatMemberCount(total)} a'zo, ${formatMemberCount(online)} faol`;
+  return translate("info.channelStats", {
+    total: formatMemberCount(total),
+    online: formatMemberCount(online),
+  });
 }
 
-function resolveContact(id: string, contactMap: Map<string, Contact>): Contact | undefined {
-  return contactMap.get(id);
+function resolveContact(id: string, contacts: Contact[]): Contact | undefined {
+  const contactMap = buildContactMap(contacts);
+  const direct = contactMap.get(id);
+  if (direct) return direct;
+
+  return contacts.find((contact) => isSameUserId(contact.id, id, contacts));
 }
 
-function resolveMemberStatus(contact: Contact | undefined, userId: string): string {
+function resolveMemberStatus(
+  contact: Contact | undefined,
+  userId: string,
+  contacts: Contact[],
+): string {
   const currentUserId = getCurrentUserId();
-  if (userId === currentUserId) return "online";
+  if (isSameUserId(userId, currentUserId, contacts)) return translate("presence.online");
+  if (contact?.lastSeen === "online") return translate("presence.online");
   if (contact?.lastSeen) return contact.lastSeen;
   if (contact?.position) return contact.position;
-  return "last seen recently";
+  return translate("presence.lastSeenRecently");
 }
 
 function contactToMember(
-  id: string,
+  participantId: string,
   contact: Contact | undefined,
   isOwner: boolean,
+  contacts: Contact[],
 ): GroupMember {
   if (contact) {
     return {
-      id: contact.id,
+      id: participantId,
       name: contact.name,
-      status: resolveMemberStatus(contact, id),
+      status: resolveMemberStatus(contact, participantId, contacts),
       avatarEmoji: contact.avatarEmoji,
       avatarColor: contact.avatarColor,
       isOwner,
@@ -59,11 +74,11 @@ function contactToMember(
   }
 
   return {
-    id,
-    name: id === "admin" ? "Admin" : id,
-    status: resolveMemberStatus(undefined, id),
-    avatarEmoji: id.charAt(0).toUpperCase(),
-    avatarColor: pickAvatarColor(id),
+    id: participantId,
+    name: participantId === "admin" ? translate("info.memberAdmin") : participantId,
+    status: resolveMemberStatus(undefined, participantId, contacts),
+    avatarEmoji: participantId.charAt(0).toUpperCase(),
+    avatarColor: pickAvatarColor(participantId),
     isOwner,
   };
 }
@@ -72,20 +87,39 @@ export function buildConversationMembers(
   conversation: Conversation,
   contacts: Contact[],
 ): GroupMember[] {
-  const contactMap = buildContactMap(contacts);
   const ownerId = conversation.ownerId ?? conversation.participantIds[0];
 
-  const members = conversation.participantIds.map((id) =>
-    contactToMember(id, resolveContact(id, contactMap), id === ownerId),
+  const uniqueParticipantIds: string[] = [];
+  for (const id of conversation.participantIds) {
+    const duplicate = uniqueParticipantIds.some((existing) =>
+      isSameUserId(existing, id, contacts),
+    );
+    if (!duplicate) uniqueParticipantIds.push(id);
+  }
+
+  const members = uniqueParticipantIds.map((id) =>
+    contactToMember(
+      id,
+      resolveContact(id, contacts),
+      isSameUserId(id, ownerId, contacts),
+      contacts,
+    ),
   );
 
   return members.sort((a, b) => {
     if (a.isOwner && !b.isOwner) return -1;
     if (!a.isOwner && b.isOwner) return 1;
-    if (a.status === "online" && b.status !== "online") return -1;
-    if (a.status !== "online" && b.status === "online") return 1;
+    if (a.status === translate("presence.online") && b.status !== translate("presence.online")) return -1;
+    if (a.status !== translate("presence.online") && b.status === translate("presence.online")) return 1;
     return a.name.localeCompare(b.name, "uz");
   });
+}
+
+export function getConversationMemberCount(
+  conversation: Conversation,
+  contacts: Contact[] = [],
+): number {
+  return buildConversationMembers(conversation, contacts).length;
 }
 
 export function hasMemberSupport(conversation: Conversation): boolean {
@@ -96,9 +130,13 @@ export function getConversationOwnerId(conversation: Conversation): string {
   return conversation.ownerId ?? conversation.participantIds[0] ?? "";
 }
 
-/** Kanallarda faqat yaratuvchi (owner) xabar yubora oladi. */
-export function canPostToConversation(conversation: Conversation | null | undefined): boolean {
+/** Kanallarda faqat yaratuvchi (owner) xabar yubora oladi. O'ziga yozish taqiqlanadi. */
+export function canPostToConversation(
+  conversation: Conversation | null | undefined,
+  contacts: Contact[] = [],
+): boolean {
   if (!conversation) return false;
+  if (isSelfConversation(conversation, getCurrentUserId(), contacts)) return false;
   if (conversation.category !== "channel") return true;
   return getCurrentUserId() === getConversationOwnerId(conversation);
 }

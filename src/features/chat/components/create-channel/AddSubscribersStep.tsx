@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   Icon,
   IconChevronBack,
@@ -50,6 +51,7 @@ export function AddSubscribersStep({
   onCreate,
   isCreating,
 }: AddSubscribersStepProps) {
+  const { t } = useTranslation();
   const [search, setSearch] = useState("");
   const [pendingContact, setPendingContact] = useState<Contact | null>(null);
 
@@ -81,12 +83,12 @@ export function AddSubscribersStep({
           type="button"
           onClick={onBack}
           className="flex h-10 w-10 items-center justify-center rounded-full text-zinc-600 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800"
-          aria-label="Orqaga"
+          aria-label={t("common.back")}
         >
           <Icon icon={IconChevronBack} size={24} />
         </button>
         <h1 className="flex-1 text-center text-[17px] font-semibold text-zinc-900 dark:text-white">
-          Add Subscribers
+          {t("createChannel.subscribersTitle")}
         </h1>
         <div className="w-10" />
       </header>
@@ -100,7 +102,7 @@ export function AddSubscribersStep({
           />
           <input
             type="search"
-            placeholder="Search"
+            placeholder={t("common.search")}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className={cn(
@@ -117,7 +119,9 @@ export function AddSubscribersStep({
         {isLoading ? (
           <ChatListSkeleton count={8} showMeta={false} showCheckbox />
         ) : filtered.length === 0 ? (
-          <p className="px-4 py-8 text-center text-sm text-zinc-400">No contacts found</p>
+          <p className="px-4 py-8 text-center text-sm text-zinc-400">
+            {t("createChannel.subscribersEmpty")}
+          </p>
         ) : (
           filtered.map((contact) => {
             const checked = selectedIds.includes(contact.id);
@@ -144,7 +148,7 @@ export function AddSubscribersStep({
                     )}
                   </div>
                   <p className="truncate text-sm text-zinc-500 dark:text-zinc-400">
-                    {contact.lastSeen ?? "last seen recently"}
+                    {contact.lastSeen ?? t("presence.lastSeenRecently")}
                   </p>
                 </div>
               </div>
@@ -163,7 +167,7 @@ export function AddSubscribersStep({
             "bg-[#00bbff] text-white hover:bg-[#00a3e0] hover:scale-105",
             isCreating && "cursor-wait opacity-70",
           )}
-          aria-label="Kanal yaratish"
+          aria-label={t("createChannel.create")}
         >
           <Icon icon={IconChevronForward} size={28} />
         </button>

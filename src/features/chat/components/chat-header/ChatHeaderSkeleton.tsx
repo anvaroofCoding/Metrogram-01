@@ -1,11 +1,14 @@
+import { useTranslation } from "react-i18next";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export function ChatHeaderSkeleton() {
+  const { t } = useTranslation();
+
   return (
     <div
       className="flex items-center gap-3 border-b border-zinc-200/60 px-4 py-3 dark:border-zinc-800"
       role="status"
-      aria-label="Chat sarlavhasi yuklanmoqda"
+      aria-label={t("chat.skeleton.header")}
     >
       <Skeleton className="h-10 w-10 shrink-0 rounded-full" />
       <div className="min-w-0 flex-1 space-y-2">

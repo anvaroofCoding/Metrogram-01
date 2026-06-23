@@ -1,5 +1,6 @@
 import { Icon, IconClose, IconMenu, IconSearch } from "@/components/icons";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "react-i18next";
 
 interface SidebarHeaderProps {
   onMenuClick: () => void;
@@ -16,6 +17,7 @@ export function SidebarHeader({
   onSearchFocus,
   className,
 }: SidebarHeaderProps) {
+  const { t } = useTranslation();
   const isSearchTrigger = Boolean(onSearchFocus);
 
   return (
@@ -24,7 +26,7 @@ export function SidebarHeader({
         type="button"
         onClick={onMenuClick}
         className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-zinc-600 transition hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800"
-        aria-label="Menyu"
+        aria-label={t("common.menu")}
       >
         <Icon icon={IconMenu} size={22} />
       </button>
@@ -37,7 +39,7 @@ export function SidebarHeader({
         />
         <input
           type="search"
-          placeholder="Qidirish"
+          placeholder={t("common.search")}
           value={isSearchTrigger ? "" : search}
           readOnly={isSearchTrigger}
           onFocus={onSearchFocus}
@@ -55,7 +57,7 @@ export function SidebarHeader({
             type="button"
             onClick={() => onSearchChange?.("")}
             className="absolute right-2 top-1/2 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-full text-zinc-400 hover:bg-zinc-200 dark:hover:bg-zinc-700"
-            aria-label="Tozalash"
+            aria-label={t("common.clear")}
           >
             <Icon icon={IconClose} size={16} />
           </button>

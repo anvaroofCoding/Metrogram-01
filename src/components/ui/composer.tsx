@@ -6,6 +6,7 @@ import {
   type FC,
   type KeyboardEvent,
 } from "react";
+import { useTranslation } from "react-i18next";
 import { Icon, IconAdd, IconArrowUp, IconEmoji, IconMic } from "@/components/icons";
 import { EmojiStickerPicker } from "@/components/ui/emoji-picker/EmojiStickerPicker";
 import { AppleEmojiText } from "@/components/ui/emoji-picker/AppleEmojiText";
@@ -42,7 +43,7 @@ export interface ComposerProps {
 }
 
 export const Composer: FC<ComposerProps> = ({
-  placeholder = "Xabar yozing...",
+  placeholder,
   onSubmit,
   onVoiceSubmit,
   onChange,
@@ -53,6 +54,8 @@ export const Composer: FC<ComposerProps> = ({
   className,
   isLoading = false,
 }) => {
+  const { t } = useTranslation();
+  const resolvedPlaceholder = placeholder ?? t("chat.composerDefault");
   const [inputValue, setInputValue] = useState("");
   const [attachedFiles, setAttachedFiles] = useState<UploadedFile[]>([]);
   const [emojiOpen, setEmojiOpen] = useState(false);
@@ -251,7 +254,7 @@ export const Composer: FC<ComposerProps> = ({
                 onChange={handleInputChange}
                 onKeyDown={handleKeyDown}
                 placeholder={
-                  attachedFiles.length > 0 ? "Ask about these files..." : placeholder
+                  attachedFiles.length > 0 ? resolvedPlaceholder : resolvedPlaceholder
                 }
                 disabled={disabled || isLoading}
                 rows={1}
@@ -278,7 +281,7 @@ export const Composer: FC<ComposerProps> = ({
                     "hover:bg-zinc-300 dark:hover:bg-zinc-600 transition-colors",
                     "disabled:cursor-not-allowed disabled:opacity-50",
                   )}
-                  aria-label="Fayl biriktirish"
+                  aria-label={t("composer.attach")}
                 >
                   <Icon icon={IconAdd} size={22} />
                 </button>
@@ -294,7 +297,7 @@ export const Composer: FC<ComposerProps> = ({
                     emojiOpen && "bg-[#00bbff]/20 text-[#00bbff]",
                     "disabled:cursor-not-allowed disabled:opacity-50",
                   )}
-                  aria-label="Emoji va stikerlar"
+                  aria-label={t("composer.emoji")}
                 >
                   <Icon icon={IconEmoji} size={22} />
                 </button>
@@ -310,7 +313,7 @@ export const Composer: FC<ComposerProps> = ({
                     "bg-[#00bbff] text-white hover:bg-[#00a3e0]",
                     "disabled:cursor-not-allowed disabled:opacity-50",
                   )}
-                  aria-label="Ovozli xabar"
+                  aria-label={t("composer.voice")}
                 >
                   <Icon icon={IconMic} size={20} />
                 </button>
@@ -325,7 +328,7 @@ export const Composer: FC<ComposerProps> = ({
                     canSubmit && "bg-[#00bbff] text-white hover:bg-[#00a3e0]",
                     !canSubmit && "bg-zinc-200 dark:bg-zinc-700 text-zinc-400 dark:text-zinc-500",
                   )}
-                  aria-label="Yuborish"
+                  aria-label={t("composer.send")}
                 >
                   <Icon icon={IconArrowUp} size={20} />
                 </button>

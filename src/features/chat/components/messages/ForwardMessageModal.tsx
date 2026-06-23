@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Icon, IconClose, IconSearch } from "@/components/icons";
 import { useGetConversationsQuery } from "@/features/chat/api/chatApi";
 import { getDisplayConversation } from "@/features/chat/lib/conversation-display";
@@ -21,6 +22,7 @@ export function ForwardMessageModal({
   onClose,
   onForward,
 }: ForwardMessageModalProps) {
+  const { t } = useTranslation();
   const { data: conversations = [] } = useGetConversationsQuery();
   const [query, setQuery] = useState("");
 
@@ -44,10 +46,11 @@ export function ForwardMessageModal({
             type="button"
             onClick={onClose}
             className="flex h-9 w-9 items-center justify-center rounded-full text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-800"
+            aria-label={t("common.close")}
           >
             <Icon icon={IconClose} size={22} />
           </button>
-          <h2 className="text-base font-semibold text-zinc-900 dark:text-white">Share with</h2>
+          <h2 className="text-base font-semibold text-zinc-900 dark:text-white">{t("forward.title")}</h2>
           <div className="w-9" />
         </div>
 
@@ -61,7 +64,7 @@ export function ForwardMessageModal({
             <input
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search"
+              placeholder={t("common.search")}
               className="w-full rounded-full bg-zinc-100 py-2.5 pl-9 pr-4 text-sm outline-none dark:bg-zinc-800 dark:text-white"
             />
           </div>
@@ -77,7 +80,7 @@ export function ForwardMessageModal({
           ))}
           {filtered.length === 0 && (
             <p className="px-4 py-8 text-center text-sm text-zinc-500">
-              Suhbat topilmadi
+              {t("forward.empty")}
             </p>
           )}
         </div>
@@ -93,6 +96,7 @@ function ForwardTargetRow({
   conversation: Conversation;
   onSelect: () => void;
 }) {
+  const { t } = useTranslation();
   const display = getDisplayConversation(conversation);
   return (
     <button
@@ -106,7 +110,7 @@ function ForwardTargetRow({
       <div className="min-w-0 flex-1">
         <p className="truncate font-medium text-zinc-900 dark:text-white">{display.title}</p>
         <p className="truncate text-sm text-zinc-500">
-          {conversation.lastMessage?.content ?? conversation.category ?? "Chat"}
+          {conversation.lastMessage?.content ?? conversation.category ?? t("forward.fallback")}
         </p>
       </div>
     </button>

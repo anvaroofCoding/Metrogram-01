@@ -1,7 +1,18 @@
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { Icon, IconZoomIn } from "@/components/icons";
+import { resolveMediaUrl } from "@/lib/files";
 import { cn } from "@/lib/utils";
 import { MediaHoverActions } from "./media-hover-actions";
 import { ImageLightbox, type LightboxImage } from "./image-lightbox";
+
+function normalizeGalleryImages(images: LightboxImage[]): LightboxImage[] {
+  return images.map((image) => ({
+    ...image,
+    url: resolveMediaUrl(image.url) ?? image.url,
+    kind: image.kind ?? "image",
+  }));
+}
 
 interface ImageGalleryProps {
   images: LightboxImage[];
@@ -14,21 +25,32 @@ export function ImageGallery({
   variant = "received",
   className,
 }: ImageGalleryProps) {
+  const { t } = useTranslation();
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [startIndex, setStartIndex] = useState(0);
 
-  const visible = useMemo(() => images.slice(0, 5), [images]);
-  const extra = images.length - visible.length;
+  const resolvedImages = useMemo(() => normalizeGalleryImages(images), [images]);
+  const visible = useMemo(() => resolvedImages.slice(0, 5), [resolvedImages]);
+  const extra = resolvedImages.length - visible.length;
 
-  if (images.length === 0) return null;
-
-  const openAt = (index: number) => {
+  const openAt = useCallback((index: number) => {
     setStartIndex(index);
     setLightboxOpen(true);
-  };
+  }, []);
 
-  if (images.length === 1) {
-    const image = images[0];
+  if (resolvedImages.length === 0) return null;
+
+  const mediaButtonClass =
+    "relative block w-full cursor-pointer touch-manipulation overflow-hidden rounded-2xl shadow-lg outline-none ring-[#00bbff]/0 transition-[transform,box-shadow,ring-color] focus-visible:ring-2 active:scale-[0.98] md:hover:scale-[1.01] md:hover:ring-2";
+
+  const renderZoomHint = () => (
+    <span className="pointer-events-none absolute bottom-2 right-2 flex h-8 w-8 items-center justify-center rounded-full bg-black/50 text-white opacity-90 md:opacity-0 md:transition-opacity md:group-hover:opacity-100">
+      <Icon icon={IconZoomIn} size={16} />
+    </span>
+  );
+
+  if (resolvedImages.length === 1) {
+    const image = resolvedImages[0];
     return (
       <>
         <div
@@ -41,20 +63,23 @@ export function ImageGallery({
           <button
             type="button"
             onClick={() => openAt(0)}
-            className="block overflow-hidden rounded-2xl shadow-lg transition-transform hover:scale-[1.02] active:scale-[0.98]"
+            className={mediaButtonClass}
+            aria-label={t("message.enlargeImage")}
           >
             <img
               src={image.url}
               alt={image.name ?? ""}
-              className="max-h-64 max-w-[280px] object-cover"
+              className="max-h-[min(70vh,420px)] w-full max-w-[min(92vw,360px)] object-cover"
               loading="lazy"
               decoding="async"
+              draggable={false}
             />
+            {renderZoomHint()}
           </button>
           <MediaHoverActions url={image.url} filename={image.name ?? "image.jpg"} />
         </div>
         <ImageLightbox
-          images={images}
+          images={resolvedImages}
           initialIndex={startIndex}
           open={lightboxOpen}
           onClose={() => setLightboxOpen(false)}
@@ -82,7 +107,11 @@ export function ImageGallery({
               <button
                 type="button"
                 onClick={() => openAt(i)}
-                className="relative h-28 w-24 overflow-hidden rounded-2xl border-[3px] border-white shadow-xl transition-transform hover:z-20 hover:scale-105 dark:border-zinc-800"
+                className={cn(
+                  mediaButtonClass,
+                  "h-28 w-24 border-[3px] border-white dark:border-zinc-800",
+                )}
+                aria-label={t("message.enlargeImage")}
               >
                 <img
                   src={img.url}
@@ -90,12 +119,14 @@ export function ImageGallery({
                   className="h-full w-full object-cover"
                   loading={i < 2 ? "eager" : "lazy"}
                   decoding="async"
+                  draggable={false}
                 />
                 {i === visible.length - 1 && extra > 0 && (
                   <span className="absolute inset-0 flex items-center justify-center bg-black/50 text-lg font-semibold text-white">
                     +{extra}
                   </span>
                 )}
+                {renderZoomHint()}
               </button>
               <MediaHoverActions url={img.url} filename={img.name ?? `image-${i + 1}.jpg`} />
             </div>
@@ -104,7 +135,7 @@ export function ImageGallery({
       </div>
 
       <ImageLightbox
-        images={images}
+        images={resolvedImages}
         initialIndex={startIndex}
         open={lightboxOpen}
         onClose={() => setLightboxOpen(false)}

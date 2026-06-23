@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
 
 interface ConfirmDialogProps {
@@ -15,13 +16,18 @@ export function ConfirmDialog({
   open,
   title,
   description,
-  confirmLabel = "Ha",
-  cancelLabel = "Bekor qilish",
+  confirmLabel,
+  cancelLabel,
   danger = false,
   onConfirm,
   onCancel,
 }: ConfirmDialogProps) {
+  const { t } = useTranslation();
+
   if (!open) return null;
+
+  const resolvedConfirm = confirmLabel ?? t("common.yes");
+  const resolvedCancel = cancelLabel ?? t("common.cancel");
 
   return (
     <div className="fixed inset-0 z-[110] flex items-center justify-center bg-black/30 p-4">
@@ -47,7 +53,7 @@ export function ConfirmDialog({
             onClick={onCancel}
             className="text-sm font-semibold uppercase tracking-wide text-[#00bbff]"
           >
-            {cancelLabel}
+            {resolvedCancel}
           </button>
           <button
             type="button"
@@ -57,7 +63,7 @@ export function ConfirmDialog({
               danger ? "text-red-500" : "text-[#00bbff]",
             )}
           >
-            {confirmLabel}
+            {resolvedConfirm}
           </button>
         </div>
       </div>

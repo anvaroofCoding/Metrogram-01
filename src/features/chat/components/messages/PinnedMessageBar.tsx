@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { Icon, IconClose, IconPin } from "@/components/icons";
 import { AppleEmojiText } from "@/components/ui/emoji-picker/AppleEmojiText";
 import { cn } from "@/lib/utils";
@@ -16,6 +17,8 @@ export function PinnedMessageBar({
   onUnpin,
   className,
 }: PinnedMessageBarProps) {
+  const { t } = useTranslation();
+
   return (
     <div
       className={cn(
@@ -29,7 +32,7 @@ export function PinnedMessageBar({
         onClick={onClick}
         className="min-w-0 flex-1 border-l-2 border-[#00bbff] pl-3 text-left"
       >
-        <p className="text-xs font-semibold text-[#00bbff]">Pinned Message</p>
+        <p className="text-xs font-semibold text-[#00bbff]">{t("message.pinned.label")}</p>
         <p className="truncate text-sm text-zinc-700 dark:text-zinc-200">
           <AppleEmojiText text={pinned.content} emojiSize={16} />
         </p>
@@ -38,7 +41,7 @@ export function PinnedMessageBar({
         type="button"
         onClick={onUnpin}
         className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-zinc-400 transition hover:bg-zinc-100 dark:hover:bg-zinc-700"
-        aria-label="Pinni olib tashlash"
+        aria-label={t("message.pinned.unpin")}
       >
         <Icon icon={IconClose} size={18} />
       </button>

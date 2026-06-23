@@ -1,4 +1,5 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
+import { useTranslation } from "react-i18next";
 import {
   Icon,
   IconCheckDone,
@@ -19,54 +20,6 @@ interface ChatListContextMenuProps {
   onClose: () => void;
 }
 
-const MENU_ITEMS: Array<{
-  action: ChatListMenuAction;
-  label: string;
-  icon: typeof IconPin;
-  danger?: boolean;
-  show?: (conversation: Conversation) => boolean;
-}> = [
-  {
-    action: "pin",
-    label: "Pin",
-    icon: IconPin,
-    show: (c) => !c.isPinned,
-  },
-  {
-    action: "unpin",
-    label: "Unpin",
-    icon: IconPin,
-    show: (c) => Boolean(c.isPinned),
-  },
-  {
-    action: "mark-read",
-    label: "Mark as read",
-    icon: IconCheckDone,
-    show: (c) => (c.unreadCount ?? 0) > 0,
-  },
-  {
-    action: "leave",
-    label: "Kanaldan chiqish",
-    icon: IconLogOut,
-    danger: true,
-    show: (c) => c.category === "channel",
-  },
-  {
-    action: "leave",
-    label: "Guruhdan chiqish",
-    icon: IconLogOut,
-    danger: true,
-    show: (c) => c.category === "group",
-  },
-  {
-    action: "delete",
-    label: "Suhbatni o'chirish",
-    icon: IconTrash,
-    danger: true,
-    show: (c) => c.category === "personal" || !c.category,
-  },
-];
-
 export function ChatListContextMenu({
   conversation,
   x,
@@ -74,7 +27,59 @@ export function ChatListContextMenu({
   onAction,
   onClose,
 }: ChatListContextMenuProps) {
+  const { t } = useTranslation();
   const ref = useRef<HTMLDivElement>(null);
+
+  const menuItems = useMemo(
+    (): Array<{
+      action: ChatListMenuAction;
+      labelKey: string;
+      icon: typeof IconPin;
+      danger?: boolean;
+      show?: (conv: Conversation) => boolean;
+    }> => [
+      {
+        action: "pin",
+        labelKey: "sidebar.menu.pin",
+        icon: IconPin,
+        show: (c) => !c.isPinned,
+      },
+      {
+        action: "unpin",
+        labelKey: "sidebar.menu.unpin",
+        icon: IconPin,
+        show: (c) => Boolean(c.isPinned),
+      },
+      {
+        action: "mark-read",
+        labelKey: "sidebar.menu.markRead",
+        icon: IconCheckDone,
+        show: (c) => (c.unreadCount ?? 0) > 0,
+      },
+      {
+        action: "leave",
+        labelKey: "sidebar.menu.leaveChannel",
+        icon: IconLogOut,
+        danger: true,
+        show: (c) => c.category === "channel",
+      },
+      {
+        action: "leave",
+        labelKey: "sidebar.menu.leaveGroup",
+        icon: IconLogOut,
+        danger: true,
+        show: (c) => c.category === "group",
+      },
+      {
+        action: "delete",
+        labelKey: "sidebar.menu.deleteChat",
+        icon: IconTrash,
+        danger: true,
+        show: (c) => c.category === "personal" || !c.category,
+      },
+    ],
+    [],
+  );
 
   useEffect(() => {
     const onPointerDown = (event: MouseEvent) => {
@@ -102,7 +107,7 @@ export function ChatListContextMenu({
     el.style.top = `${Math.min(y, maxY)}px`;
   }, [x, y]);
 
-  const visibleItems = MENU_ITEMS.filter(
+  const visibleItems = menuItems.filter(
     (item) => item.show?.(conversation) ?? true,
   );
 
@@ -115,7 +120,7 @@ export function ChatListContextMenu({
     >
       {visibleItems.map((item) => (
         <button
-          key={`${item.action}-${item.label}`}
+          key={`${item.action}-${item.labelKey}`}
           type="button"
           role="menuitem"
           onClick={() => {
@@ -134,7 +139,7 @@ export function ChatListContextMenu({
             size={20}
             className={item.danger ? "text-red-500" : "text-zinc-500 dark:text-zinc-400"}
           />
-          {item.label}
+          {t(item.labelKey)}
         </button>
       ))}
     </div>

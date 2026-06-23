@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   Icon,
   IconCalendar,
@@ -8,6 +9,7 @@ import {
   IconSearch,
 } from "@/components/icons";
 import { useDisplayConversation } from "@/features/chat/hooks/useDisplayConversation";
+import { formatWeekdayShort } from "@/i18n/app-date-format";
 import { cn } from "@/lib/utils";
 import type { Conversation, Message } from "@/types/chat";
 import { ChatAvatar } from "../sidebar/ChatAvatar";
@@ -49,6 +51,7 @@ export function ChatSearchBar({
   onJumpToMessage,
   onOpenCalendar,
 }: ChatSearchBarProps) {
+  const { t } = useTranslation();
   const inputRef = useRef<HTMLInputElement>(null);
   const [query, setQuery] = useState("");
   const [activeIndex, setActiveIndex] = useState(0);
@@ -84,12 +87,13 @@ export function ChatSearchBar({
   };
 
   return (
-    <header className="mx-4 mt-4 flex flex-col gap-2">
+    <header className="flex shrink-0 flex-col gap-2 border-b border-zinc-100 px-2 py-2 dark:border-zinc-800 md:mx-4 md:mt-4 md:border-0 md:px-0 md:py-0">
       <div
         className={cn(
           "flex items-center gap-1.5 rounded-full px-3 py-2",
           "border border-zinc-200/90 bg-zinc-100 shadow-sm",
           "dark:border-zinc-700 dark:bg-zinc-800",
+          "md:shadow-sm",
         )}
       >
         <Icon icon={IconSearch} size={18} className="shrink-0 text-zinc-400" />
@@ -98,7 +102,7 @@ export function ChatSearchBar({
           type="search"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="Qidirish"
+          placeholder={t("chat.search.placeholder")}
           className="min-w-0 flex-1 bg-transparent text-sm text-zinc-900 outline-none placeholder:text-zinc-400 dark:text-white dark:placeholder:text-zinc-500"
         />
         {query && results.length > 0 && (
@@ -111,7 +115,7 @@ export function ChatSearchBar({
           onClick={goPrev}
           disabled={results.length === 0}
           className={actionBtnClass}
-          aria-label="Oldingi natija"
+          aria-label={t("chat.search.prev")}
         >
           <Icon icon={IconChevronUp} size={18} />
         </button>
@@ -120,7 +124,7 @@ export function ChatSearchBar({
           onClick={goNext}
           disabled={results.length === 0}
           className={actionBtnClass}
-          aria-label="Keyingi natija"
+          aria-label={t("chat.search.next")}
         >
           <Icon icon={IconChevronDown} size={18} />
         </button>
@@ -128,8 +132,8 @@ export function ChatSearchBar({
           type="button"
           onClick={onOpenCalendar}
           className={actionBtnClass}
-          aria-label="Sana bo'yicha"
-          title="Sana bo'yicha"
+          aria-label={t("chat.search.byDate")}
+          title={t("chat.search.byDate")}
         >
           <Icon icon={IconCalendar} size={18} />
         </button>
@@ -137,7 +141,7 @@ export function ChatSearchBar({
           type="button"
           onClick={onClose}
           className={actionBtnClass}
-          aria-label="Yopish"
+          aria-label={t("common.close")}
         >
           <Icon icon={IconClose} size={20} />
         </button>
@@ -152,7 +156,7 @@ export function ChatSearchBar({
         >
           {results.length === 0 ? (
             <p className="px-4 py-6 text-center text-sm text-zinc-400">
-              Natija topilmadi
+              {t("search.noResults")}
             </p>
           ) : (
             results.map((msg, i) => (
@@ -177,9 +181,7 @@ export function ChatSearchBar({
                       {display.title}
                     </span>
                     <span className="shrink-0 text-xs text-zinc-400">
-                      {new Date(msg.createdAt).toLocaleDateString("uz-UZ", {
-                        weekday: "short",
-                      })}
+                      {formatWeekdayShort(new Date(msg.createdAt))}
                     </span>
                   </div>
                   <p className="truncate text-sm text-zinc-500 dark:text-zinc-400">

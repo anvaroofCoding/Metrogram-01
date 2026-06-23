@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import { Icon, IconCall, IconChevronBack, IconSearch } from "@/components/icons";
 import { ChatHeaderMenu } from "@/features/chat/components/chat-header/ChatHeaderMenu";
 import { usePeerPresence } from "@/features/chat/hooks/usePeerPresence";
@@ -32,6 +33,7 @@ export function ChatHeaderBar({
   onCancelSelection,
   className,
 }: ChatHeaderBarProps) {
+  const { t } = useTranslation();
   const display = useDisplayConversation(conversation);
   const isChannel = conversation.category === "channel";
   const { statusLabel, isTyping } = usePeerPresence(conversation);
@@ -60,12 +62,14 @@ export function ChatHeaderBar({
           type="button"
           onClick={onCancelSelection}
           className="flex h-10 w-10 items-center justify-center rounded-full text-zinc-500 transition hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800"
-          aria-label="Bekor qilish"
+          aria-label={t("chat.header.cancel")}
         >
           <Icon icon={IconChevronBack} size={24} />
         </button>
         <span className="flex-1 text-center text-[15px] font-semibold text-zinc-900 dark:text-white">
-          {selectedCount > 0 ? `${selectedCount} ta tanlandi` : "Xabarlarni tanlash"}
+          {selectedCount > 0
+            ? t("selection.count", { count: selectedCount })
+            : t("chat.header.selectMessages")}
         </span>
         <div className="w-10" />
       </header>
@@ -107,7 +111,7 @@ export function ChatHeaderBar({
         <button
           type="button"
           className="flex h-10 w-10 items-center justify-center rounded-full text-zinc-500 transition hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800"
-          aria-label="Qo'ng'iroq"
+          aria-label={t("chat.header.call")}
         >
           <Icon icon={IconCall} size={22} />
         </button>
@@ -115,7 +119,7 @@ export function ChatHeaderBar({
           type="button"
           onClick={onSearchClick}
           className="flex h-10 w-10 items-center justify-center rounded-full text-zinc-500 transition hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800"
-          aria-label="Qidirish"
+          aria-label={t("chat.header.search")}
         >
           <Icon icon={IconSearch} size={22} />
         </button>

@@ -76,3 +76,23 @@
 .dark .imessage-from-me::after {
   background-color: var(--chat-surface, #1e1e1e);
 }
+
+/* Kod bloklari bilan xabarlar */
+.imessage-bubble--with-code {
+  padding: 8px;
+  min-width: min(100%, 240px);
+}
+
+.imessage-bubble--code-only {
+  padding: 4px;
+}
+
+.imessage-bubble--code-only.imessage-from-me,
+.imessage-bubble--code-only.imessage-from-them {
+  background: transparent;
+}
+
+.imessage-bubble--code-only::before,
+.imessage-bubble--code-only::after {
+  display: none;
+}

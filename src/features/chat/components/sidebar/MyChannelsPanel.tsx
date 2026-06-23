@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Icon, IconChevronBack, IconSearch } from "@/components/icons";
 import { ChatListItem } from "@/features/chat/components/sidebar/ChatListItem";
 import { ChatListSkeleton } from "@/features/chat/components/sidebar/ChatListSkeleton";
@@ -23,6 +24,7 @@ export function MyChannelsPanel({
   onSelect,
   onCreateChannel,
 }: MyChannelsPanelProps) {
+  const { t } = useTranslation();
   const [search, setSearch] = useState("");
 
   const ownedChannels = useMemo(() => {
@@ -45,12 +47,12 @@ export function MyChannelsPanel({
           type="button"
           onClick={onBack}
           className="flex h-10 w-10 items-center justify-center rounded-full text-zinc-600 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800"
-          aria-label="Orqaga"
+          aria-label={t("common.back")}
         >
           <Icon icon={IconChevronBack} size={24} />
         </button>
         <h1 className="flex-1 text-center text-[17px] font-semibold text-zinc-900 dark:text-white">
-          Kanallarim
+          {t("menu.myChannels")}
         </h1>
         <div className="w-10" />
       </header>
@@ -64,7 +66,7 @@ export function MyChannelsPanel({
           />
           <input
             type="search"
-            placeholder="Qidirish"
+            placeholder={t("common.search")}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className={cn(
@@ -83,7 +85,7 @@ export function MyChannelsPanel({
         ) : ownedChannels.length === 0 ? (
           <div className="flex flex-col items-center gap-3 px-4 py-12 text-center">
             <p className="text-sm text-zinc-500 dark:text-zinc-400">
-              {search.trim() ? "Kanal topilmadi" : "Hali kanallaringiz yo'q"}
+              {search.trim() ? t("search.noResults") : t("sidebar.empty.channel")}
             </p>
             {!search.trim() && onCreateChannel && (
               <button
@@ -91,7 +93,7 @@ export function MyChannelsPanel({
                 onClick={onCreateChannel}
                 className="rounded-full bg-[#00bbff] px-5 py-2 text-sm font-medium text-white hover:bg-[#00a3e0]"
               >
-                Kanal yaratish
+                {t("createChannel.create")}
               </button>
             )}
           </div>

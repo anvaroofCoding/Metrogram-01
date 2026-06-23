@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { Icon, IconClose, IconDocument } from "@/components/icons";
 import { cn } from "@/lib/utils";
 import { formatFileSize } from "@/lib/files";
@@ -25,6 +26,8 @@ function FileTypeIcon({ kind }: { kind: UploadedFile["kind"] }) {
 }
 
 export function FilePreview({ files, onRemove, className }: FilePreviewProps) {
+  const { t } = useTranslation();
+
   if (files.length === 0) return null;
 
   return (
@@ -40,7 +43,7 @@ export function FilePreview({ files, onRemove, className }: FilePreviewProps) {
               decoding="async"
             />
             {onRemove && (
-              <RemoveButton onClick={() => onRemove(file.id)} />
+              <RemoveButton onClick={() => onRemove(file.id)} label={t("common.delete")} />
             )}
           </div>
         ) : file.kind === "video" && file.previewUrl ? (
@@ -56,7 +59,7 @@ export function FilePreview({ files, onRemove, className }: FilePreviewProps) {
               VIDEO
             </span>
             {onRemove && (
-              <RemoveButton onClick={() => onRemove(file.id)} />
+              <RemoveButton onClick={() => onRemove(file.id)} label={t("common.delete")} />
             )}
           </div>
         ) : (
@@ -78,7 +81,7 @@ export function FilePreview({ files, onRemove, className }: FilePreviewProps) {
                 type="button"
                 onClick={() => onRemove(file.id)}
                 className="rounded-full p-0.5 text-zinc-400 opacity-0 transition-opacity hover:text-zinc-600 group-hover:opacity-100 dark:hover:text-zinc-200"
-                aria-label="O'chirish"
+                aria-label={t("common.delete")}
               >
                 <Icon icon={IconClose} size={14} />
               </button>
@@ -90,13 +93,13 @@ export function FilePreview({ files, onRemove, className }: FilePreviewProps) {
   );
 }
 
-function RemoveButton({ onClick }: { onClick: () => void }) {
+function RemoveButton({ onClick, label }: { onClick: () => void; label: string }) {
   return (
     <button
       type="button"
       onClick={onClick}
       className="absolute -right-1.5 -top-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-zinc-800 text-white opacity-0 transition-opacity group-hover:opacity-100"
-      aria-label="O'chirish"
+      aria-label={label}
     >
       <Icon icon={IconClose} size={12} />
     </button>

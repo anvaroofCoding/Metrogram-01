@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Icon, IconCheckCircle, IconMore, IconTrash } from "@/components/icons";
 import { cn } from "@/lib/utils";
 import type { Conversation } from "@/types/chat";
@@ -39,6 +40,7 @@ export function ChatHeaderMenu({
   onSelectMessages,
   onLeave,
 }: ChatHeaderMenuProps) {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
 
@@ -46,7 +48,9 @@ export function ChatHeaderMenu({
     (conversation.category === "group" || conversation.category === "channel") &&
     Boolean(onLeave);
   const leaveLabel =
-    conversation.category === "channel" ? "Kanaldan chiqish" : "Guruhdan chiqish";
+    conversation.category === "channel"
+      ? t("chat.header.leaveChannel")
+      : t("chat.header.leaveGroup");
 
   useEffect(() => {
     if (!open) return;
@@ -70,7 +74,7 @@ export function ChatHeaderMenu({
           "flex h-10 w-10 items-center justify-center rounded-full text-zinc-500 transition hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800",
           open && "bg-zinc-100 dark:bg-zinc-800",
         )}
-        aria-label="Ko'proq"
+        aria-label={t("chat.header.more")}
         aria-expanded={open}
       >
         <Icon icon={IconMore} size={22} />
@@ -86,7 +90,7 @@ export function ChatHeaderMenu({
         >
           <MenuRow
             icon={<Icon icon={IconCheckCircle} size={20} />}
-            label="Xabarlarni tanlash"
+            label={t("chat.header.selectMessages")}
             onClick={() => {
               setOpen(false);
               onSelectMessages();

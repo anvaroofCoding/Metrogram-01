@@ -1,8 +1,12 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { useLocation } from "react-router-dom";
 
 
 
 import { Icon, IconChat } from "@/components/icons";
+
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 
 
 
@@ -29,7 +33,7 @@ import {
 
 import { getCurrentUserId } from "@/features/auth/auth-session";
 
-import { getDisplayConversation } from "@/features/chat/lib/conversation-display";
+import { getDisplayConversation, isSelfConversation } from "@/features/chat/lib/conversation-display";
 
 import { toDateKey } from "@/features/chat/lib/message-dates";
 
@@ -44,8 +48,9 @@ import type { Conversation } from "@/types/chat";
 
 
 export function ChatPage() {
+  const { t } = useTranslation();
 
-
+  const location = useLocation();
 
   const [selected, setSelected] = useState<Conversation | null>(null);
 
@@ -76,6 +81,7 @@ export function ChatPage() {
   const [calendarInitialDate, setCalendarInitialDate] = useState<string | undefined>();
 
   const [selectionUi, setSelectionUi] = useState({ active: false, count: 0 });
+  const [leaveConfirm, setLeaveConfirm] = useState<Conversation | null>(null);
   const chatActionsRef = useRef<ChatWindowActions | null>(null);
 
 
@@ -114,18 +120,42 @@ export function ChatPage() {
   );
 
   useEffect(() => {
+    const openConversationId = (location.state as { openConversationId?: string } | null)
+      ?.openConversationId;
+    if (!openConversationId) return;
+
+    const conversation = conversations.find((item) => item.id === openConversationId);
+    if (conversation) {
+      setSelected(conversation);
+      setUserInfoOpen(false);
+      setChannelInfoOpen(false);
+      window.history.replaceState({}, document.title);
+    }
+  }, [location.state, conversations]);
+
+  useEffect(() => {
     if (!selected) return;
     const updated = conversations.find((c) => c.id === selected.id);
-    if (
-      updated &&
-      (updated.unreadCount !== selected.unreadCount ||
-        updated.isRead !== selected.isRead)
-    ) {
+    if (!updated) return;
+
+    const pinChanged =
+      updated.isPinned !== selected.isPinned ||
+      updated.pinnedListAt !== selected.pinnedListAt ||
+      updated.pinnedMessage?.id !== selected.pinnedMessage?.id ||
+      updated.pinnedMessage?.content !== selected.pinnedMessage?.content;
+    const readChanged =
+      updated.unreadCount !== selected.unreadCount || updated.isRead !== selected.isRead;
+
+    if (pinChanged || readChanged) {
       setSelected(updated);
     }
   }, [conversations, selected]);
 
-
+  useEffect(() => {
+    if (selected && isSelfConversation(selected, undefined, contacts)) {
+      setSelected(null);
+    }
+  }, [selected, contacts]);
 
   const isChannel = selected?.category === "channel";
 
@@ -136,8 +166,9 @@ export function ChatPage() {
 
 
   const handleSelect = (conversation: Conversation | null) => {
-
-
+    if (conversation && isSelfConversation(conversation, undefined, contacts)) {
+      return;
+    }
 
     setSelected(conversation);
 
@@ -338,23 +369,17 @@ export function ChatPage() {
     chatActionsRef.current?.cancelSelection();
   }, []);
 
-  const handleLeaveConversation = useCallback(async () => {
+  const handleLeaveConversation = useCallback(() => {
     if (!selected) return;
+    setLeaveConfirm(selected);
+  }, [selected]);
 
-    const label =
-      selected.category === "channel" ? "kanaldan" : "guruhdan";
-
-    if (
-      !window.confirm(
-        `Haqiqatan ham ${label} chiqmoqchimisiz? Yozishmalaringiz qoladi, lekin endi a'zo bo'lmaysiz.`,
-      )
-    ) {
-      return;
-    }
-
-    await leaveConversation({ conversationId: selected.id });
+  const handleLeaveConfirm = useCallback(async () => {
+    if (!leaveConfirm) return;
+    await leaveConversation({ conversationId: leaveConfirm.id });
     handleSelect(null);
-  }, [leaveConversation, selected, handleSelect]);
+    setLeaveConfirm(null);
+  }, [leaveConfirm, leaveConversation, handleSelect]);
 
   const handleConversationRemoved = useCallback(
     (conversationId: string) => {
@@ -373,11 +398,18 @@ export function ChatPage() {
 
 
 
-    <div className="flex h-dvh gap-3 overflow-hidden bg-zinc-100 p-3 dark:bg-zinc-950">
+    <div className="flex h-dvh overflow-hidden bg-white md:gap-3 md:bg-zinc-100 md:p-3 dark:bg-[#1e1e1e] md:dark:bg-zinc-950">
 
 
 
-      <ChatSidebar
+      <div
+        className={
+          selected
+            ? "hidden min-h-0 md:flex md:flex-none"
+            : "flex min-h-0 flex-1 md:flex-none"
+        }
+      >
+        <ChatSidebar
 
 
 
@@ -404,6 +436,7 @@ export function ChatPage() {
         onConversationRemoved={handleConversationRemoved}
 
       />
+      </div>
 
 
 
@@ -411,7 +444,13 @@ export function ChatPage() {
 
 
 
-      <main className="relative flex min-w-0 flex-1 flex-col overflow-hidden rounded-[28px] bg-white shadow-xl dark:bg-[#1e1e1e] dark:shadow-black/40">
+      <main
+        className={
+          selected
+            ? "relative flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden bg-white dark:bg-[#1e1e1e] md:rounded-[28px] md:shadow-xl dark:md:shadow-black/40"
+            : "relative hidden min-h-0 min-w-0 flex-col overflow-hidden bg-white dark:bg-[#1e1e1e] md:flex md:flex-1 md:rounded-[28px] md:shadow-xl dark:md:shadow-black/40"
+        }
+      >
 
 
 
@@ -541,7 +580,7 @@ export function ChatPage() {
                 setCalendarOpen(true);
               }}
 
-              canCompose={canPostToConversation(selected)}
+              canCompose={canPostToConversation(selected, contacts)}
               conversationCategory={selected.category}
               actionsRef={chatActionsRef}
               onSelectionChange={setSelectionUi}
@@ -578,7 +617,7 @@ export function ChatPage() {
 
 
 
-            <p className="text-sm">Suhbatni tanlang yoki yangisini boshlang</p>
+            <p className="text-sm">{t("chat.selectOrStart")}</p>
 
 
 
@@ -654,6 +693,25 @@ export function ChatPage() {
 
 
 
+      />
+
+      <ConfirmDialog
+        open={Boolean(leaveConfirm)}
+        title={
+          leaveConfirm?.category === "channel"
+            ? t("sidebar.leave.channelTitle")
+            : t("sidebar.leave.groupTitle")
+        }
+        description={
+          leaveConfirm?.category === "channel"
+            ? t("sidebar.leave.channelDescription")
+            : t("sidebar.leave.groupDescription")
+        }
+        confirmLabel={t("sidebar.leave.confirm")}
+        cancelLabel={t("common.cancel")}
+        danger
+        onCancel={() => setLeaveConfirm(null)}
+        onConfirm={() => void handleLeaveConfirm()}
       />
 
 

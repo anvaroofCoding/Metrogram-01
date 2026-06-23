@@ -2,6 +2,7 @@ import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import { useAuth } from "@/features/auth/auth-store";
 import { LoginPage } from "@/features/auth/pages/LoginPage";
 import { ChatPage } from "@/features/chat/pages/ChatPage";
+import { JoinInvitePage } from "@/features/chat/pages/JoinInvitePage";
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, user } = useAuth();
@@ -37,6 +38,14 @@ export function AppRouter() {
         element={
           <ProtectedRoute>
             <ChatPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/join/:code"
+        element={
+          <ProtectedRoute>
+            <JoinInvitePage />
           </ProtectedRoute>
         }
       />

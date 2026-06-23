@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Icon, IconCamera, IconChevronBack, IconMegaphone } from "@/components/icons";
 import { Input } from "@/components/ui/input";
 import { ProfileAvatar } from "@/features/profile/components/ProfileAvatar";
@@ -11,6 +12,7 @@ interface EditProfilePanelProps {
 }
 
 export function EditProfilePanel({ onBack }: EditProfilePanelProps) {
+  const { t } = useTranslation();
   const { profile, updateProfile } = useProfile();
   const fileRef = useRef<HTMLInputElement>(null);
 
@@ -49,7 +51,7 @@ export function EditProfilePanel({ onBack }: EditProfilePanelProps) {
       });
       onBack();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Saqlashda xatolik");
+      setError(err instanceof Error ? err.message : t("common.saveError"));
     } finally {
       setSaving(false);
     }
@@ -63,7 +65,7 @@ export function EditProfilePanel({ onBack }: EditProfilePanelProps) {
       setAvatarUrl(await uploadAvatarFile(file));
     } catch (err) {
       setError(
-        err instanceof Error ? err.message : "Rasm yuklanmadi. Boshqa fayl tanlang.",
+        err instanceof Error ? err.message : t("common.photoUploadFailed"),
       );
     } finally {
       setUploadingPhoto(false);
@@ -74,7 +76,7 @@ export function EditProfilePanel({ onBack }: EditProfilePanelProps) {
   if (!profile) {
     return (
       <div className="absolute inset-0 z-30 flex items-center justify-center rounded-[28px] bg-[#f4f4f5] dark:bg-[#0f0f0f]">
-        <p className="text-sm text-zinc-500">Profil yuklanmoqda...</p>
+        <p className="text-sm text-zinc-500">{t("settings.profileLoading")}</p>
       </div>
     );
   }
@@ -91,12 +93,12 @@ export function EditProfilePanel({ onBack }: EditProfilePanelProps) {
           type="button"
           onClick={onBack}
           className="flex h-10 w-10 items-center justify-center rounded-full text-zinc-600 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800"
-          aria-label="Orqaga"
+          aria-label={t("common.back")}
         >
           <Icon icon={IconChevronBack} size={24} />
         </button>
         <h1 className="flex-1 text-center text-[17px] font-semibold text-zinc-900 dark:text-white">
-          Edit Profile
+          {t("profile.editTitle")}
         </h1>
         <button
           type="button"
@@ -104,7 +106,7 @@ export function EditProfilePanel({ onBack }: EditProfilePanelProps) {
           disabled={saving}
           className="rounded-full px-3 py-1.5 text-[15px] font-semibold text-[#00bbff] hover:bg-[#00bbff]/10 disabled:opacity-50"
         >
-          {saving ? "..." : "Done"}
+          {saving ? "..." : t("common.done")}
         </button>
       </header>
 
@@ -115,7 +117,7 @@ export function EditProfilePanel({ onBack }: EditProfilePanelProps) {
             onClick={() => fileRef.current?.click()}
             disabled={uploadingPhoto}
             className="relative disabled:opacity-60"
-            aria-label="Rasm yuklash"
+            aria-label={t("common.uploadPhoto")}
           >
             <ProfileAvatar profile={draftProfile} size="lg" />
             <span className="absolute inset-0 flex items-center justify-center rounded-full bg-black/35">
@@ -138,64 +140,54 @@ export function EditProfilePanel({ onBack }: EditProfilePanelProps) {
 
         <SettingsCard className="mb-3 space-y-4 p-4">
           <Input
-            label="Name"
+            label={t("profile.name")}
             value={name}
             onChange={(e) => setName(e.target.value)}
-            placeholder="Ism"
+            placeholder={t("profile.name")}
           />
           <Input
-            label="Last Name"
+            label={t("profile.lastName")}
             value={lastName}
             onChange={(e) => setLastName(e.target.value)}
-            placeholder="Familiya"
+            placeholder={t("profile.lastName")}
           />
           <Input
-            label="Position"
+            label={t("profile.position")}
             value={position}
             onChange={(e) => setPosition(e.target.value)}
-            placeholder="Software developer"
+            placeholder={t("profile.positionPlaceholder")}
           />
           <Input
-            label="Bio (optional)"
+            label={t("profile.bioOptional")}
             value={bio}
             onChange={(e) => setBio(e.target.value)}
-            placeholder="Bio"
+            placeholder={t("settings.bio")}
           />
         </SettingsCard>
 
-        <p className="mb-3 px-2 text-xs leading-relaxed text-zinc-500">
-          Any details such as age, occupation or city. Example: 23 y.o. designer from San Francisco
-        </p>
-
-        <h3 className="mb-2 px-2 text-sm font-semibold text-[#00bbff]">Username</h3>
+        <h3 className="mb-2 px-2 text-sm font-semibold text-[#00bbff]">{t("settings.username")}</h3>
         <SettingsCard className="mb-3 p-4">
           <Input
-            label="Username (optional)"
+            label={t("profile.usernameOptional")}
             value={username}
             onChange={(e) => setUsername(e.target.value.replace(/\s/g, ""))}
             placeholder="username"
           />
         </SettingsCard>
-        <p className="mb-6 px-2 text-xs leading-relaxed text-zinc-500">
-          People can find you by this username. Use a–z, 0–9 and underscores. Minimum 5 characters.
-        </p>
 
-        <h3 className="mb-2 px-2 text-sm font-semibold text-[#00bbff]">Personal Channel</h3>
+        <h3 className="mb-2 px-2 text-sm font-semibold text-[#00bbff]">{t("profile.personalChannel")}</h3>
         <SettingsCard>
           <div className="flex items-center gap-3 px-4 py-3.5">
             <Icon icon={IconMegaphone} size={20} className="text-zinc-400" />
-            <span className="flex-1 text-[15px] text-zinc-900 dark:text-white">Channel</span>
+            <span className="flex-1 text-[15px] text-zinc-900 dark:text-white">{t("profile.channel")}</span>
             <button
               type="button"
               className="text-[15px] font-medium text-[#00bbff] hover:underline"
             >
-              Add
+              {t("common.add")}
             </button>
           </div>
         </SettingsCard>
-        <p className="mt-2 px-2 text-xs text-zinc-500">
-          Display the channel you manage in your profile.
-        </p>
 
         {error && (
           <p className="mt-4 px-2 text-center text-sm text-red-500">{error}</p>

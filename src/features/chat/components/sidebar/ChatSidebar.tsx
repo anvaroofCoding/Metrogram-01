@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useAuth } from "@/features/auth/auth-store";
 import { isAdminUser } from "@/features/auth/auth-session";
 import type { Contact, Conversation } from "@/types/chat";
@@ -9,7 +10,7 @@ import {
 import type { GlobalSearchTab } from "@/features/chat/lib/global-search";
 import { openOrFindPersonalChat } from "@/features/chat/lib/personal-conversation";
 import { useGetContactsQuery } from "@/features/users/api/usersApi";
-import { isSelfContact } from "@/features/chat/lib/conversation-display";
+import { isSelfContact, isSelfConversation } from "@/features/chat/lib/conversation-display";
 import { EditProfilePanel } from "@/features/profile/components/EditProfilePanel";
 import { ProfileSettingsPanel } from "@/features/profile/components/ProfileSettingsPanel";
 import { CreateChannelWizard } from "@/features/chat/components/create-channel/CreateChannelWizard";
@@ -44,6 +45,7 @@ export function ChatSidebar({
   onGroupCreated,
   onConversationRemoved,
 }: ChatSidebarProps) {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const isAdmin = isAdminUser(user);
   const { data: conversations = [], isLoading, isError, error, refetch } = useGetConversationsQuery();
@@ -111,6 +113,7 @@ export function ChatSidebar({
             selectedId={selectedId}
             isLoading={isLoading || contactsSearchLoading}
             onConversationSelect={(conversation) => {
+              if (isSelfConversation(conversation, undefined, contacts)) return;
               onSelect(conversation);
               closeSearch();
             }}
@@ -133,14 +136,14 @@ export function ChatSidebar({
             ) : isError ? (
               <div className="flex flex-1 flex-col items-center justify-center gap-3 px-4 py-12 text-center">
                 <p className="text-sm text-red-500">
-                  {error instanceof Error ? error.message : "Suhbatlarni yuklab bo'lmadi"}
+                  {error instanceof Error ? error.message : t("sidebar.loadFailed")}
                 </p>
                 <button
                   type="button"
                   onClick={() => void refetch()}
                   className="rounded-full bg-[#00bbff] px-5 py-2 text-sm font-medium text-white hover:bg-[#00a3e0]"
                 >
-                  Qayta urinish
+                  {t("common.retry")}
                 </button>
               </div>
             ) : (

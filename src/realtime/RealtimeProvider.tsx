@@ -38,7 +38,8 @@ import {
 
 } from "@/realtime/realtime-socket";
 
-import type { Message, TypingIndicator } from "@/types/chat";
+import { sortConversationsForSidebar } from "@/features/chat/lib/sort-conversations";
+import type { Conversation, Message, TypingIndicator } from "@/types/chat";
 
 
 
@@ -200,10 +201,11 @@ export function RealtimeProvider({ children }: { children: ReactNode }) {
 
 
 
-    const unsubConversation = onSocketEvent("conversation:updated", () => {
-
+    const unsubConversation = onSocketEvent("conversation:updated", (payload) => {
+      const conversation = payload as Conversation;
+      chatApi.emitRealtimeEvent({ type: "conversation:updated", payload: conversation });
+      handleConversationUpdated(conversation);
       chatApi.util.invalidateTags(["Conversation"]);
-
     });
 
 
@@ -424,6 +426,39 @@ function handleDeletedMessage(data: { id: string; conversationId: string }) {
     }),
   );
   chatApi.util.invalidateTags(["Conversation"]);
+}
+
+function handleConversationUpdated(conversation: Conversation) {
+  chatApi.util.updateQueryData<Conversation[]>("getConversations", undefined, (draft) => {
+    const items = draft ?? [];
+    const exists = items.some((c) => c.id === conversation.id);
+    const next = exists
+      ? items.map((c) => {
+          if (c.id !== conversation.id) return c;
+          return {
+            ...c,
+            pinnedMessage: conversation.pinnedMessage,
+            title: conversation.title,
+            description: conversation.description,
+            avatarUrl: conversation.avatarUrl,
+            avatarEmoji: conversation.avatarEmoji,
+            avatarColor: conversation.avatarColor,
+            username: conversation.username,
+            isVerified: conversation.isVerified,
+            subscriberCount: conversation.subscriberCount,
+            inviteLink: conversation.inviteLink,
+            isPublic: conversation.isPublic,
+            updatedAt: conversation.updatedAt,
+            timeLabel: conversation.timeLabel,
+            lastMessage: conversation.lastMessage,
+            participantIds: conversation.participantIds,
+            ownerId: conversation.ownerId,
+            category: conversation.category,
+          };
+        })
+      : [...items, conversation];
+    return sortConversationsForSidebar(next);
+  });
 }
 
 

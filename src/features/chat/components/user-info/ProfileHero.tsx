@@ -1,3 +1,4 @@
+import { AvatarLightboxTrigger } from "@/components/ui/avatar-lightbox-trigger";
 import { useDisplayConversation } from "@/features/chat/hooks/useDisplayConversation";
 import { cn } from "@/lib/utils";
 import type { Conversation } from "@/types/chat";
@@ -13,7 +14,9 @@ export function ProfileHero({ conversation, subtitle }: ProfileHeroProps) {
 
   return (
     <div className="flex flex-col items-center px-4 pb-4 pt-2">
-      <ChatAvatar conversation={display} size="xl" />
+      <AvatarLightboxTrigger avatarUrl={display.avatarUrl} name={display.title}>
+        <ChatAvatar conversation={display} size="xl" />
+      </AvatarLightboxTrigger>
       <h3 className="mt-4 text-xl font-semibold text-zinc-900 dark:text-white">
         {display.title}
       </h3>

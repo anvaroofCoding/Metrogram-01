@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import {
   Icon,
@@ -21,6 +22,7 @@ import { useAuth, MAX_AUTH_ACCOUNTS } from "@/features/auth/auth-store";
 import { isAdminUser } from "@/features/auth/auth-session";
 import { ProfileAvatar } from "@/features/profile/components/ProfileAvatar";
 import { useProfile } from "@/features/profile/profile-store";
+import { LanguagePicker } from "@/i18n/LanguagePicker";
 import { cn } from "@/lib/utils";
 
 interface SideMenuDrawerProps {
@@ -74,6 +76,7 @@ export function SideMenuDrawer({
   onSettingsClick,
   onProfileClick,
 }: SideMenuDrawerProps) {
+  const { t } = useTranslation();
   const [moreOpen, setMoreOpen] = useState(false);
   const { theme, toggleTheme } = useTheme();
   const { logout, user, accounts, canAddAccount, switchAccount } = useAuth();
@@ -141,7 +144,7 @@ export function SideMenuDrawer({
             type="button"
             onClick={onClose}
             className="shrink-0 rounded-full p-1.5 text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800"
-            aria-label="Yopish"
+            aria-label={t("common.close")}
           >
             <Icon icon={IconClose} size={18} />
           </button>
@@ -171,7 +174,7 @@ export function SideMenuDrawer({
                 {account.name}
               </span>
               {isActive && (
-                <span className="text-xs font-medium text-[#00bbff]">Faol</span>
+                <span className="text-xs font-medium text-[#00bbff]">{t("menu.active")}</span>
               )}
             </button>
           );
@@ -179,45 +182,46 @@ export function SideMenuDrawer({
 
         <MenuItem
           icon={<Icon icon={IconPersonAdd} size={22} />}
-          label="Add Account"
+          label={t("menu.addAccount")}
           onClick={handleAddAccount}
           className={!canAddAccount ? "cursor-not-allowed opacity-50" : undefined}
         />
         {!canAddAccount && (
           <p className="mx-4 mb-1 text-center text-xs text-zinc-400">
-            Maksimum {MAX_AUTH_ACCOUNTS} ta akkaunt
+            {t("menu.maxAccounts", { count: MAX_AUTH_ACCOUNTS })}
           </p>
         )}
         <MenuDivider />
-        <MenuItem icon={<Icon icon={IconBookmark} size={22} />} label="Saved Messages" />
+        <MenuItem icon={<Icon icon={IconBookmark} size={22} />} label={t("menu.savedMessages")} />
         <MenuItem
           icon={<Icon icon={IconStories} size={22} />}
-          label="Kanallarim"
+          label={t("menu.myChannels")}
           onClick={onMyChannelsClick}
         />
         <MenuItem
           icon={<Icon icon={IconPeople} size={22} />}
-          label="Contacts"
+          label={t("menu.contacts")}
           onClick={onContactsClick}
         />
         {isAdmin && (
           <MenuItem
             icon={<Icon icon={IconShield} size={22} />}
-            label="Admin"
+            label={t("menu.admin")}
             onClick={onAdminClick}
           />
         )}
         <MenuDivider />
+        <LanguagePicker />
         <MenuItem
           icon={<Icon icon={IconSettings} size={22} />}
-          label="Settings"
+          label={t("menu.settings")}
           onClick={onSettingsClick}
         />
 
         <div className="relative pb-2">
           <MenuItem
             icon={<Icon icon={IconMore} size={22} />}
-            label="More"
+            label={t("menu.more")}
             suffix={<Icon icon={IconChevronForward} size={16} className="text-zinc-400" />}
             onClick={() => setMoreOpen((prev) => !prev)}
           />
@@ -232,13 +236,13 @@ export function SideMenuDrawer({
             >
               <MenuItem
                 icon={<Icon icon={isDark ? IconSun : IconMoon} size={22} />}
-                label={isDark ? "Enable Light Mode" : "Enable Dark Mode"}
+                label={isDark ? t("theme.enableLight") : t("theme.enableDark")}
                 onClick={toggleTheme}
                 className="my-1"
               />
               <MenuItem
                 icon={<Icon icon={IconLogOut} size={22} />}
-                label="Log out"
+                label={t("menu.logout")}
                 onClick={handleLogout}
                 className="mb-1"
               />

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
 
 interface PinMessageDialogProps {
@@ -14,6 +15,7 @@ export function PinMessageDialog({
   onClose,
   onConfirm,
 }: PinMessageDialogProps) {
+  const { t } = useTranslation();
   const [pinForAll, setPinForAll] = useState(true);
 
   if (!open) return null;
@@ -27,10 +29,10 @@ export function PinMessageDialog({
         aria-labelledby="pin-dialog-title"
       >
         <h2 id="pin-dialog-title" className="text-xl font-semibold text-zinc-900 dark:text-white">
-          Pin message
+          {t("message.pin.title")}
         </h2>
         <p className="mt-3 text-sm leading-relaxed text-zinc-600 dark:text-zinc-300">
-          Do you want to pin this message at the top of the chat?
+          {t("message.pin.description")}
         </p>
 
         {contactName && (
@@ -42,7 +44,7 @@ export function PinMessageDialog({
               className="h-5 w-5 rounded border-zinc-300 text-[#00bbff] focus:ring-[#00bbff]"
             />
             <span className="text-sm text-zinc-700 dark:text-zinc-200">
-              Also pin for {contactName.toUpperCase()}
+              {t("message.pin.alsoFor", { name: contactName.toUpperCase() })}
             </span>
           </label>
         )}
@@ -53,7 +55,7 @@ export function PinMessageDialog({
             onClick={onClose}
             className="text-sm font-semibold uppercase tracking-wide text-[#00bbff]"
           >
-            Cancel
+            {t("common.cancel")}
           </button>
           <button
             type="button"
@@ -62,7 +64,7 @@ export function PinMessageDialog({
               "text-sm font-semibold uppercase tracking-wide text-[#00bbff]",
             )}
           >
-            Pin
+            {t("message.pin.confirm")}
           </button>
         </div>
       </div>

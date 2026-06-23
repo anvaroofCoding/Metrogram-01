@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   Icon,
   IconClose,
@@ -10,7 +11,7 @@ import { cn } from "@/lib/utils";
 
 interface FabMenuItem {
   id: string;
-  label: string;
+  labelKey: string;
   icon: React.ReactNode;
   onClick?: () => void;
 }
@@ -21,7 +22,15 @@ interface SidebarFABProps {
   onNewGroup?: () => void;
 }
 
-function FabMenuItemButton({ icon, label, onClick }: Omit<FabMenuItem, "id">) {
+function FabMenuItemButton({
+  icon,
+  label,
+  onClick,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  onClick?: () => void;
+}) {
   return (
     <button
       type="button"
@@ -41,12 +50,13 @@ export function SidebarFAB({
   onNewChannel,
   onNewGroup,
 }: SidebarFABProps) {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
 
   const menuItems: FabMenuItem[] = [
     {
       id: "channel",
-      label: "New Channel",
+      labelKey: "fab.newChannel",
       icon: <Icon icon={IconMegaphone} size={22} />,
       onClick: () => {
         onNewChannel?.();
@@ -55,7 +65,7 @@ export function SidebarFAB({
     },
     {
       id: "group",
-      label: "New Group",
+      labelKey: "fab.newGroup",
       icon: <Icon icon={IconPeople} size={22} />,
       onClick: () => {
         onNewGroup?.();
@@ -74,7 +84,7 @@ export function SidebarFAB({
         />
       )}
 
-      <div className={cn("absolute bottom-5 right-5 z-20 flex flex-col items-end gap-3", className)}>
+      <div className={cn("absolute right-5 z-20 flex flex-col items-end gap-3 bottom-[calc(1.25rem+env(safe-area-inset-bottom,0px))]", className)}>
         {open && (
           <div
             className={cn(
@@ -88,7 +98,7 @@ export function SidebarFAB({
               <FabMenuItemButton
                 key={item.id}
                 icon={item.icon}
-                label={item.label}
+                label={t(item.labelKey)}
                 onClick={item.onClick}
               />
             ))}
@@ -103,7 +113,7 @@ export function SidebarFAB({
             "bg-[#00bbff] text-white hover:bg-[#00a3e0]",
             open && "rotate-0",
           )}
-          aria-label={open ? "Yopish" : "Yangi xabar"}
+          aria-label={open ? t("common.close") : t("fab.open")}
           aria-expanded={open}
         >
           <Icon

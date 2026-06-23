@@ -1,4 +1,5 @@
-import { readAuthUser, getCurrentUserId } from "@/features/auth/auth-session";
+import { getCurrentUserId } from "@/features/auth/auth-session";
+import { isSameUserId } from "@/features/chat/lib/personal-conversation";
 import { pickAvatarColor } from "@/features/users/lib/user-mappers";
 import type { Contact, Conversation } from "@/types/chat";
 
@@ -57,31 +58,30 @@ export function getOtherParticipantId(
   return conversation.participantIds.find((id) => id !== currentUserId);
 }
 
-/** Faqat haqiqiy o'ziga-o'zi suhbat (participantlar bo'sh yoki faqat o'zi) */
+/** Shaxsiy suhbat, unda barcha ishtirokchilar bitta foydalanuvchi (masalan admin + mongo id) */
 export function isSelfConversation(
   conversation: Conversation,
-  currentUserId = getCurrentUserId(),
+  _currentUserId = getCurrentUserId(),
+  contacts: Contact[] = [],
 ): boolean {
   if (conversation.category !== "personal") return false;
 
-  const others = conversation.participantIds.filter((id) => id !== currentUserId);
-  if (others.length === 0) return true;
+  const { participantIds } = conversation;
+  if (participantIds.length === 0) return true;
 
-  return conversation.participantIds.every((id) => id === currentUserId);
+  const [first, ...rest] = participantIds;
+  return rest.every((id) => isSameUserId(id, first, contacts));
 }
 
 export function isSelfContact(
   contact: Contact,
   currentUserId = getCurrentUserId(),
+  contacts: Contact[] = [],
 ): boolean {
-  if (contact.id === currentUserId) return true;
-
-  const authUser = readAuthUser();
-  if (!authUser) return false;
-
-  return (
-    contact.username?.toLowerCase() === authUser.username.toLowerCase() ||
-    contact.phone === authUser.phone
+  return isSameUserId(
+    contact.id,
+    currentUserId,
+    contacts.length > 0 ? contacts : [contact],
   );
 }
 
@@ -118,13 +118,40 @@ export function getDisplayConversation(
 export function filterVisibleConversations(
   conversations: Conversation[],
   currentUserId = getCurrentUserId(),
+  contacts: Contact[] = [],
 ): Conversation[] {
-  return conversations.filter((conversation) => !isSelfConversation(conversation, currentUserId));
+  return conversations.filter(
+    (conversation) => !isSelfConversation(conversation, currentUserId, contacts),
+  );
 }
 
 export function filterContactsForCurrentUser(
   contacts: Contact[],
   currentUserId = getCurrentUserId(),
 ): Contact[] {
-  return contacts.filter((contact) => !isSelfContact(contact, currentUserId));
+  return dedupeContacts(
+    contacts.filter((contact) => !isSelfContact(contact, currentUserId, contacts)),
+  );
+}
+
+export function isContactAlreadyInConversation(
+  contact: Contact,
+  conversation: Conversation,
+  contacts: Contact[] = [],
+): boolean {
+  return conversation.participantIds.some((participantId) =>
+    isSameUserId(participantId, contact.id, contacts),
+  );
+}
+
+/** Bir xil foydalanuvchi (admin alias va h.k.) takrorlanmasin */
+export function dedupeContacts(contacts: Contact[]): Contact[] {
+  const result: Contact[] = [];
+  for (const contact of contacts) {
+    const duplicate = result.some((existing) =>
+      isSameUserId(existing.id, contact.id, contacts),
+    );
+    if (!duplicate) result.push(contact);
+  }
+  return result;
 }

@@ -2,6 +2,7 @@ import type { MessageAttachment } from "@/types/attachments";
 import type { Message } from "@/types/chat";
 
 const URL_REGEX = /https?:\/\/[^\s<>"{}|\\^`[\]]+/gi;
+const INVITE_LINK_REGEX = /(?:https?:\/\/)?t\.me\/\+[A-Za-z0-9]+/gi;
 
 export interface ConversationMediaItem {
   id: string;
@@ -93,8 +94,11 @@ export function filterConversationMessages(messages: Message[]): ConversationMes
       }
     }
 
-    const matches = message.content.match(URL_REGEX) ?? [];
-    for (const rawUrl of matches) {
+    const urlMatches = [
+      ...(message.content.match(URL_REGEX) ?? []),
+      ...(message.content.match(INVITE_LINK_REGEX) ?? []),
+    ];
+    for (const rawUrl of urlMatches) {
       const url = rawUrl.replace(/[.,;:!?)]+$/, "");
       if (seenLinks.has(url)) continue;
       seenLinks.add(url);
@@ -117,9 +121,10 @@ export function formatVoiceDuration(seconds?: number): string {
   return `${m}:${s.toString().padStart(2, "0")}`;
 }
 
+import { formatShortAppDate } from "@/i18n/app-date-format";
+
 export function formatMessageDate(iso: string): string {
-  return new Date(iso).toLocaleDateString("uz-UZ", {
-    day: "numeric",
-    month: "short",
-  });
+  const date = new Date(iso);
+  if (Number.isNaN(date.getTime())) return "";
+  return formatShortAppDate(date);
 }

@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
-import { Icon, IconInfo, IconLink, IconQrCode } from "@/components/icons";
+import { useTranslation } from "react-i18next";
+import { Icon, IconInfo } from "@/components/icons";
+import { InviteLinkRow } from "@/features/chat/components/invite/InviteLinkRow";
 import {
   ConversationMembersSection,
   getMembersSubtitle,
@@ -7,14 +9,13 @@ import {
 import { useGetContactsQuery } from "@/features/users/api/usersApi";
 import { InfoPanelHeader } from "@/features/chat/components/user-info/InfoPanelHeader";
 import {
+  CHANNEL_TABS,
   NotificationsRow,
 } from "@/features/chat/components/user-info/InfoTabContent";
 import { InfoCard, ProfileHero } from "@/features/chat/components/user-info/ProfileHero";
 import { EditChannelPanel } from "./EditChannelPanel";
 import { cn } from "@/lib/utils";
 import type { Conversation } from "@/types/chat";
-
-const CHANNEL_TABS = ["Members", "Media", "Files", "Links", "Voice"] as const;
 
 interface ChannelInfoPanelProps {
   open: boolean;
@@ -31,13 +32,14 @@ export function ChannelInfoPanel({
   onMemberClick,
   onConversationUpdated,
 }: ChannelInfoPanelProps) {
+  const { t } = useTranslation();
   const [notifications, setNotifications] = useState(true);
   const [activeTab, setActiveTab] = useState<string>(CHANNEL_TABS[0]);
   const [editOpen, setEditOpen] = useState(false);
   const { data: contacts = [] } = useGetContactsQuery({}, { pollingInterval: 8000 });
 
   useEffect(() => {
-    if (open) setActiveTab("Members");
+    if (open) setActiveTab("members");
   }, [open, conversation?.id]);
 
   useEffect(() => {
@@ -54,11 +56,13 @@ export function ChannelInfoPanel({
   return (
     <aside
       className={cn(
-        "relative flex h-full w-[360px] shrink-0 flex-col overflow-hidden rounded-[28px] bg-[#f4f4f5] shadow-xl dark:bg-[#1c1c1e]",
+        "relative flex h-full shrink-0 flex-col overflow-hidden bg-[#f4f4f5] dark:bg-[#1c1c1e]",
+        "max-md:fixed max-md:inset-0 max-md:z-[60] max-md:w-full max-md:rounded-none",
+        "md:w-[360px] md:shrink-0 md:rounded-[28px] md:shadow-xl",
       )}
     >
       <InfoPanelHeader
-        title="Channel Info"
+        title={t("info.channelTitle")}
         onClose={onClose}
         showEdit
         onEdit={() => setEditOpen(true)}
@@ -75,27 +79,13 @@ export function ChannelInfoPanel({
                 <p className="text-[15px] text-zinc-900 dark:text-white">
                   {conversation.description}
                 </p>
-                <p className="text-xs text-zinc-400">Info</p>
+                <p className="text-xs text-zinc-400">{t("info.description")}</p>
               </div>
             </div>
           )}
 
           {conversation.inviteLink && (
-            <div className="flex items-center gap-3 border-b border-zinc-100 px-4 py-3.5 dark:border-zinc-700">
-              <Icon icon={IconLink} size={22} className="shrink-0 text-zinc-400" />
-              <div className="min-w-0 flex-1">
-                <a
-                  href={`https://${conversation.inviteLink}`}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="block truncate text-[15px] text-[#00bbff] hover:underline"
-                >
-                  {conversation.inviteLink}
-                </a>
-                <p className="text-xs text-zinc-400">Link</p>
-              </div>
-              <Icon icon={IconQrCode} size={22} className="shrink-0 text-zinc-400" />
-            </div>
+            <InviteLinkRow inviteLink={conversation.inviteLink} label={t("info.channelLink")} />
           )}
 
           <NotificationsRow

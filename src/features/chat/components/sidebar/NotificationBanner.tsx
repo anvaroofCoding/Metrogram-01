@@ -1,8 +1,10 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Icon, IconClose, IconNotifications } from "@/components/icons";
 import { cn } from "@/lib/utils";
 
 export function NotificationBanner({ className }: { className?: string }) {
+  const { t } = useTranslation();
   const [visible, setVisible] = useState(true);
 
   if (!visible) return null;
@@ -17,13 +19,13 @@ export function NotificationBanner({ className }: { className?: string }) {
     >
       <Icon icon={IconNotifications} size={18} className="shrink-0 text-zinc-500" />
       <p className="flex-1 text-xs leading-snug text-zinc-600 dark:text-zinc-400">
-        Never miss a message! 🔔 Enable notifications to stay updated.
+        {t("notifications.banner")}
       </p>
       <button
         type="button"
         onClick={() => setVisible(false)}
         className="shrink-0 rounded-full p-1 text-zinc-400 hover:bg-zinc-200 dark:hover:bg-zinc-700"
-        aria-label="Yopish"
+        aria-label={t("common.close")}
       >
         <Icon icon={IconClose} size={16} />
       </button>

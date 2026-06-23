@@ -1,6 +1,8 @@
 import "./message-bubble.css";
 
-import { AppleEmojiText } from "@/components/ui/emoji-picker/AppleEmojiText";
+import { LinkifiedMessageText } from "@/components/ui/message-content/LinkifiedMessageText";
+import { MessageContent } from "@/components/ui/message-content/MessageContent";
+import { hasCodeBlocks, isCodeOnlyMessage } from "@/lib/parse-message-content";
 import { cn } from "@/lib/utils";
 
 export interface MessageBubbleProps {
@@ -16,15 +18,20 @@ export function MessageBubble({
   className,
   children,
 }: MessageBubbleProps) {
+  const containsCode = hasCodeBlocks(message);
+  const codeOnly = containsCode && isCodeOnlyMessage(message);
+
   return (
     <div
       className={cn(
         "imessage-bubble whitespace-pre-wrap",
         variant === "sent" ? "imessage-from-me" : "imessage-from-them",
+        containsCode && "imessage-bubble--with-code",
+        codeOnly && "imessage-bubble--code-only",
         className,
       )}
     >
-      {children ?? <AppleEmojiText text={message} emojiSize={20} />}
+      {children ?? (containsCode ? <MessageContent text={message} /> : <LinkifiedMessageText text={message} emojiSize={20} />)}
     </div>
   );
 }

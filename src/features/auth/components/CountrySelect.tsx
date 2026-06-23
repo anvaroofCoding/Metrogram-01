@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Icon, IconChevronDown, IconSearch } from "@/components/icons";
 import { cn } from "@/lib/utils";
 import { COUNTRIES, type Country } from "../data/countries";
@@ -10,6 +11,7 @@ interface CountrySelectProps {
 }
 
 export function CountrySelect({ value, onChange, className }: CountrySelectProps) {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const containerRef = useRef<HTMLDivElement>(null);
@@ -81,7 +83,7 @@ export function CountrySelect({ value, onChange, className }: CountrySelectProps
                 type="text"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder="Qidirish..."
+                placeholder={t("auth.countrySearch")}
                 className="w-full rounded-lg bg-zinc-100 py-2 pl-9 pr-3 text-sm text-zinc-900 outline-none dark:bg-zinc-800 dark:text-white"
                 autoFocus
               />
@@ -114,7 +116,7 @@ export function CountrySelect({ value, onChange, className }: CountrySelectProps
             ))}
             {filtered.length === 0 && (
               <li className="px-4 py-6 text-center text-sm text-zinc-400">
-                Topilmadi
+                {t("common.noResults")}
               </li>
             )}
           </ul>

@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { Icon, IconChevronForward } from "@/components/icons";
 import { cn } from "@/lib/utils";
 import {
@@ -12,18 +13,20 @@ interface AdminHubPanelProps {
 }
 
 export function AdminHubPanel({ onBack, onNavigate }: AdminHubPanelProps) {
+  const { t } = useTranslation();
+
   return (
-    <PanelShell title="Admin" onBack={onBack} subtitle="Boshqaruv markazi">
+    <PanelShell title={t("admin.title")} onBack={onBack} subtitle={t("admin.subtitle")}>
       <div className="flex-1 overflow-y-auto px-3 py-3 pb-6">
         <p className="mb-4 px-1 text-center text-sm text-zinc-500 dark:text-zinc-400">
-          Telegram admin paneli — foydalanuvchilar, kontent va tizim xizmatlari
+          {t("admin.description")}
         </p>
 
         <div className="space-y-3">
           {ADMIN_SERVICE_SECTIONS.map((section) => (
-            <section key={section.title}>
+            <section key={section.titleKey}>
               <h2 className="mb-1.5 px-2 text-xs font-semibold uppercase tracking-wide text-zinc-400">
-                {section.title}
+                {t(section.titleKey)}
               </h2>
               <div className="overflow-hidden rounded-2xl bg-white shadow-sm dark:bg-[#2b2b2b]">
                 {section.items.map((item, index) => (
@@ -45,11 +48,11 @@ export function AdminHubPanel({ onBack, onNavigate }: AdminHubPanelProps) {
                     </span>
                     <span className="min-w-0 flex-1">
                       <span className="block text-[15px] font-medium text-zinc-900 dark:text-white">
-                        {item.label}
+                        {t(item.labelKey)}
                       </span>
-                      {item.description && (
+                      {item.descriptionKey && (
                         <span className="block truncate text-xs text-zinc-500 dark:text-zinc-400">
-                          {item.description}
+                          {t(item.descriptionKey)}
                         </span>
                       )}
                     </span>

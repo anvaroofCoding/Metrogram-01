@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { Icon, IconCheck, IconCheckDone } from "@/components/icons";
 import { cn } from "@/lib/utils";
 import type { MessageStatus } from "@/types/chat";
@@ -8,13 +9,15 @@ interface MessageStatusIconProps {
 }
 
 export function MessageStatusIcon({ status, className }: MessageStatusIconProps) {
+  const { t } = useTranslation();
+
   if (status === "read") {
     return (
       <Icon
         icon={IconCheckDone}
         size={14}
         className={cn("text-[#00bbff]", className)}
-        aria-label="O'qilgan"
+        aria-label={t("message.status.read")}
       />
     );
   }
@@ -25,7 +28,7 @@ export function MessageStatusIcon({ status, className }: MessageStatusIconProps)
         icon={IconCheckDone}
         size={14}
         className={cn("text-zinc-400", className)}
-        aria-label="Yetkazilgan"
+        aria-label={t("message.status.delivered")}
       />
     );
   }

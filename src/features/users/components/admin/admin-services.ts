@@ -10,6 +10,7 @@ import {
   IconShield,
   IconStories,
 } from "@/components/icons";
+import { translate } from "@/i18n/translate";
 
 export type AdminScreen =
   | "hub"
@@ -28,122 +29,122 @@ export type AdminScreen =
 
 export interface AdminServiceItem {
   id: AdminScreen;
-  label: string;
-  description?: string;
+  labelKey: string;
+  descriptionKey?: string;
   icon: IconType;
   iconColor: string;
 }
 
 export interface AdminServiceSection {
-  title: string;
+  titleKey: string;
   items: AdminServiceItem[];
 }
 
 export const ADMIN_SERVICE_SECTIONS: AdminServiceSection[] = [
   {
-    title: "Foydalanuvchilar",
+    titleKey: "admin.section.users",
     items: [
       {
         id: "register",
-        label: "Foydalanuvchi qo'shish",
-        description: "Yangi kontakt ro'yxatdan o'tkazish",
+        labelKey: "admin.services.register",
+        descriptionKey: "admin.services.registerDesc",
         icon: IconPersonAdd,
         iconColor: "#00bbff",
       },
       {
         id: "users",
-        label: "Barcha foydalanuvchilar",
-        description: "Ro'yxatdan o'tganlar ro'yxati",
+        labelKey: "admin.services.users",
+        descriptionKey: "admin.services.usersDesc",
         icon: IconPeople,
         iconColor: "#6366f1",
       },
       {
         id: "contacts",
-        label: "Kontaktlar",
-        description: "Telefon kitobi",
+        labelKey: "admin.services.contacts",
+        descriptionKey: "admin.services.contactsDesc",
         icon: IconPerson,
         iconColor: "#14b8a6",
       },
       {
         id: "banned",
-        label: "Ban qilinganlar",
-        description: "Cheklangan akkauntlar",
+        labelKey: "admin.services.banned",
+        descriptionKey: "admin.services.bannedDesc",
         icon: IconShield,
         iconColor: "#ef4444",
       },
     ],
   },
   {
-    title: "Kontent",
+    titleKey: "admin.section.content",
     items: [
       {
         id: "channels",
-        label: "Kanallar boshqaruvi",
-        description: "Kanallar va obunachilar",
+        labelKey: "admin.services.channels",
+        descriptionKey: "admin.services.channelsDesc",
         icon: IconMegaphone,
         iconColor: "#0ea5e9",
       },
       {
         id: "groups",
-        label: "Guruhlar boshqaruvi",
-        description: "Guruh a'zolari va huquqlar",
+        labelKey: "admin.services.groups",
+        descriptionKey: "admin.services.groupsDesc",
         icon: IconPeople,
         iconColor: "#8b5cf6",
       },
       {
         id: "bots",
-        label: "Botlar",
-        description: "Bot tokenlari va sozlamalar",
+        labelKey: "admin.services.bots",
+        descriptionKey: "admin.services.botsDesc",
         icon: IconChat,
         iconColor: "#f97316",
       },
     ],
   },
   {
-    title: "Xabarlar",
+    titleKey: "admin.section.messages",
     items: [
       {
         id: "broadcast",
-        label: "Broadcast xabar",
-        description: "Ommaviy xabar yuborish",
+        labelKey: "admin.services.broadcast",
+        descriptionKey: "admin.services.broadcastDesc",
         icon: IconMegaphone,
         iconColor: "#00bbff",
       },
       {
         id: "stats",
-        label: "Statistika",
-        description: "Faollik va xabarlar hisoboti",
+        labelKey: "admin.services.stats",
+        descriptionKey: "admin.services.statsDesc",
         icon: IconDocument,
         iconColor: "#64748b",
       },
     ],
   },
   {
-    title: "Xavfsizlik",
+    titleKey: "admin.section.security",
     items: [
       {
         id: "admins",
-        label: "Adminlar",
-        description: "Huquqlar va rollar",
+        labelKey: "admin.services.admins",
+        descriptionKey: "admin.services.adminsDesc",
         icon: IconShield,
         iconColor: "#eab308",
       },
       {
         id: "sessions",
-        label: "Faol sessiyalar",
-        description: "Qurilmalar va kirishlar",
+        labelKey: "admin.services.sessions",
+        descriptionKey: "admin.services.sessionsDesc",
         icon: IconStories,
         iconColor: "#22c55e",
       },
     ],
   },
   {
-    title: "Tizim",
+    titleKey: "admin.section.system",
     items: [
       {
         id: "settings",
-        label: "Tizim sozlamalari",
-        description: "Umumiy admin parametrlari",
+        labelKey: "admin.services.settings",
+        descriptionKey: "admin.services.settingsDesc",
         icon: IconSettings,
         iconColor: "#71717a",
       },
@@ -164,15 +165,15 @@ export const PLACEHOLDER_SCREENS = new Set<AdminScreen>([
 ]);
 
 export function getAdminScreenTitle(screen: AdminScreen): string {
-  if (screen === "hub") return "Admin";
-  if (screen === "register") return "Foydalanuvchi qo'shish";
-  if (screen === "users") return "Barcha foydalanuvchilar";
-  if (screen === "contacts") return "Kontaktlar";
+  if (screen === "hub") return translate("admin.title");
+  if (screen === "register") return translate("admin.services.register");
+  if (screen === "users") return translate("admin.services.users");
+  if (screen === "contacts") return translate("admin.services.contacts");
 
   for (const section of ADMIN_SERVICE_SECTIONS) {
     const item = section.items.find((entry) => entry.id === screen);
-    if (item) return item.label;
+    if (item) return translate(item.labelKey);
   }
 
-  return "Admin";
+  return translate("admin.title");
 }

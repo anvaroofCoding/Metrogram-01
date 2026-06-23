@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 
@@ -57,11 +58,13 @@ export function ChatListSkeleton({
   showMeta = true,
   showCheckbox = false,
 }: ChatListSkeletonProps) {
+  const { t } = useTranslation();
+
   return (
     <div
       className="flex-1 overflow-hidden"
       role="status"
-      aria-label="Chatlar yuklanmoqda"
+      aria-label={t("chat.skeleton.list")}
     >
       {Array.from({ length: count }, (_, i) => (
         <ChatListItemSkeleton

@@ -250,7 +250,21 @@ export const chatApi = chatApiInstance.injectEndpoints((build) => ({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ messageId, pinForAll }),
       }),
-    invalidatesTags: () => ["Conversation"],
+    onQueryStarted: async (_arg, { queryFulfilled, optimisticUpdate, getCacheData }) => {
+      try {
+        const { data } = await queryFulfilled;
+        const updated = data as Conversation;
+        const latest = getCacheData<Conversation[]>("getConversations", undefined);
+        if (!latest) return;
+        optimisticUpdate<Conversation[]>(
+          "getConversations",
+          undefined,
+          sortConversationsForSidebar(latest.map((c) => (c.id === updated.id ? updated : c))),
+        );
+      } catch {
+        // ignore
+      }
+    },
   }),
 
   unpinMessage: build.mutation<{ conversationId: string }, Conversation>("unpinMessage", {
@@ -258,7 +272,21 @@ export const chatApi = chatApiInstance.injectEndpoints((build) => ({
       apiFetch<Conversation>(`/api/conversations/${conversationId}/pin`, {
         method: "DELETE",
       }),
-    invalidatesTags: () => ["Conversation"],
+    onQueryStarted: async (_arg, { queryFulfilled, optimisticUpdate, getCacheData }) => {
+      try {
+        const { data } = await queryFulfilled;
+        const updated = data as Conversation;
+        const latest = getCacheData<Conversation[]>("getConversations", undefined);
+        if (!latest) return;
+        optimisticUpdate<Conversation[]>(
+          "getConversations",
+          undefined,
+          sortConversationsForSidebar(latest.map((c) => (c.id === updated.id ? updated : c))),
+        );
+      } catch {
+        // ignore
+      }
+    },
   }),
 
   toggleReaction: build.mutation<ToggleReactionInput, Message>("toggleReaction", {
@@ -333,6 +361,24 @@ export const chatApi = chatApiInstance.injectEndpoints((build) => ({
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ memberIds }),
+      }),
+    invalidatesTags: () => ["Conversation"],
+  }),
+
+  joinGroup: build.mutation<{ conversationId: string }, Conversation>("joinGroup", {
+    mutationFn: async ({ conversationId }) =>
+      apiFetch<Conversation>(`/api/conversations/${conversationId}/join`, {
+        method: "POST",
+      }),
+    invalidatesTags: () => ["Conversation"],
+  }),
+
+  joinByInvite: build.mutation<{ code: string }, Conversation>("joinByInvite", {
+    mutationFn: async ({ code }) =>
+      apiFetch<Conversation>("/api/invite/join", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ code }),
       }),
     invalidatesTags: () => ["Conversation"],
   }),
@@ -431,12 +477,13 @@ export const chatApi = chatApiInstance.injectEndpoints((build) => ({
 
         try {
           const { data } = await queryFulfilled;
+          const updated = data as Conversation;
           const latest = getCacheData<Conversation[]>("getConversations", undefined) ?? current;
           optimisticUpdate<Conversation[]>(
             "getConversations",
             undefined,
             sortConversationsForSidebar(
-              latest.map((c) => (c.id === data.id ? data : c)),
+              latest.map((c) => (c.id === updated.id ? updated : c)),
             ),
           );
         } catch {
@@ -471,12 +518,13 @@ export const chatApi = chatApiInstance.injectEndpoints((build) => ({
 
         try {
           const { data } = await queryFulfilled;
+          const updated = data as Conversation;
           const latest = getCacheData<Conversation[]>("getConversations", undefined) ?? current;
           optimisticUpdate<Conversation[]>(
             "getConversations",
             undefined,
             sortConversationsForSidebar(
-              latest.map((c) => (c.id === data.id ? data : c)),
+              latest.map((c) => (c.id === updated.id ? updated : c)),
             ),
           );
         } catch {
@@ -525,6 +573,8 @@ export const {
   useCreateGroupMutation,
   useOpenPersonalChatMutation,
   useAddMembersMutation,
+  useJoinGroupMutation,
+  useJoinByInviteMutation,
   useMarkConversationReadMutation,
   useUpdateConversationMutation,
   useLeaveConversationMutation,
@@ -583,6 +633,14 @@ export const {
   >;
   useAddMembersMutation: () => import("@/lib/chat-query").MutationHookResult<
     { conversationId: string; memberIds: string[] },
+    Conversation
+  >;
+  useJoinGroupMutation: () => import("@/lib/chat-query").MutationHookResult<
+    { conversationId: string },
+    Conversation
+  >;
+  useJoinByInviteMutation: () => import("@/lib/chat-query").MutationHookResult<
+    { code: string },
     Conversation
   >;
   useMarkConversationReadMutation: () => import("@/lib/chat-query").MutationHookResult<

@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { DeleteCountdownBanner } from "@/components/ui/delete-countdown-banner";
 import {
@@ -14,6 +15,7 @@ import {
 } from "@/features/chat/lib/conversation-display";
 import { sortConversationsForSidebar } from "@/features/chat/lib/sort-conversations";
 import { getCurrentUserId } from "@/features/auth/auth-session";
+import { formatMessagePreview } from "@/lib/parse-message-content";
 import type { Contact, Conversation } from "@/types/chat";
 import {
   ChatListContextMenu,
@@ -31,14 +33,6 @@ interface ChatListProps {
   search?: string;
 }
 
-const EMPTY_LABELS: Record<string, string> = {
-  all: "Hali suhbatlar yo'q",
-  personal: "Shaxsiy suhbatlar yo'q",
-  group: "Guruhlar yo'q",
-  channel: "Kanallar yo'q",
-  bot: "Botlar yo'q",
-};
-
 const DELETE_COUNTDOWN_SECONDS = 5;
 
 export function ChatList({
@@ -50,6 +44,7 @@ export function ChatList({
   activeCategory,
   search = "",
 }: ChatListProps) {
+  const { t } = useTranslation();
   const q = search.trim().toLowerCase();
   const currentUserId = getCurrentUserId();
 
@@ -138,15 +133,15 @@ export function ChatList({
 
   let visible =
     activeCategory === "all"
-      ? filterVisibleConversations(conversations)
-      : filterVisibleConversations(conversations).filter(
+      ? filterVisibleConversations(conversations, currentUserId, contacts)
+      : filterVisibleConversations(conversations, currentUserId, contacts).filter(
           (c) => c.category === activeCategory,
         );
 
   if (q) {
     visible = visible.filter((c) => {
       const display = getDisplayConversation(c, currentUserId, contacts);
-      const preview = c.lastMessage?.content ?? "";
+      const preview = formatMessagePreview(c.lastMessage?.content ?? "");
       return (
         display.title.toLowerCase().includes(q) ||
         preview.toLowerCase().includes(q)
@@ -161,22 +156,24 @@ export function ChatList({
       <div className="flex flex-1 flex-col items-center justify-center gap-2 px-6 py-12 text-center">
         <p className="text-sm text-zinc-500 dark:text-zinc-400">
           {q
-            ? "Natija topilmadi"
-            : (EMPTY_LABELS[activeCategory] ?? EMPTY_LABELS.all)}
+            ? t("common.noResults")
+            : t(`sidebar.empty.${activeCategory}`, { defaultValue: t("sidebar.empty.all") })}
         </p>
         <p className="text-xs text-zinc-400 dark:text-zinc-500">
           {activeCategory === "channel"
-            ? "Pastdagi tugma orqali kanal yarating"
+            ? t("sidebar.empty.hintChannel")
             : activeCategory === "personal"
-              ? "Admin orqali foydalanuvchi qo'shing"
-              : "Ma'lumotlar backenddan yuklanadi"}
+              ? t("sidebar.empty.hintPersonal")
+              : t("sidebar.empty.hintDefault")}
         </p>
       </div>
     );
   }
 
   const leaveLabel =
-    leaveConfirm?.category === "channel" ? "Kanaldan chiqish" : "Guruhdan chiqish";
+    leaveConfirm?.category === "channel"
+      ? t("sidebar.leave.channelTitle")
+      : t("sidebar.leave.groupTitle");
 
   return (
     <>
@@ -207,11 +204,11 @@ export function ChatList({
         title={leaveLabel}
         description={
           leaveConfirm?.category === "channel"
-            ? "Haqiqatan ham kanaldan chiqmoqchimisiz? Yozishmalaringiz qoladi, lekin endi a'zo bo'lmaysiz."
-            : "Haqiqatan ham guruhdan chiqmoqchimisiz? Yozishmalaringiz qoladi, lekin endi a'zo bo'lmaysiz."
+            ? t("sidebar.leave.channelDescription")
+            : t("sidebar.leave.groupDescription")
         }
-        confirmLabel="Chiqish"
-        cancelLabel="Bekor qilish"
+        confirmLabel={t("sidebar.leave.confirm")}
+        cancelLabel={t("common.cancel")}
         danger
         onCancel={() => setLeaveConfirm(null)}
         onConfirm={() => void handleLeaveConfirm()}
@@ -219,7 +216,9 @@ export function ChatList({
 
       <DeleteCountdownBanner
         open={Boolean(pendingDelete)}
-        title={`"${pendingDelete?.title ?? "Suhbat"}" o'chiriladi`}
+        title={t("sidebar.deleteCountdown", {
+          title: pendingDelete?.title ?? t("sidebar.deleteFallback"),
+        })}
         secondsLeft={deleteSecondsLeft}
         onCancel={cancelPendingDelete}
       />

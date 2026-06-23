@@ -1,0 +1,439 @@
+{
+  "common": {
+    "back": "Орқага",
+    "close": "Ёпиш",
+    "cancel": "Бекор қилиш",
+    "save": "Сақлаш",
+    "done": "Тайёр",
+    "search": "Қидириш",
+    "edit": "Таҳрирлаш",
+    "next": "Кейинги",
+    "add": "Қўшиш",
+    "delete": "Ўчириш",
+    "forward": "Узатиш",
+    "yes": "Ҳа",
+    "loading": "Юкланмоқда...",
+    "loadingContent": "Юкланмоқда...",
+    "loadFailed": "Юклаб бўлмади",
+    "retry": "Қайта уриниш",
+    "noResults": "Натижа топилмади",
+    "comingSoon": "Тез кунда",
+    "uploadPhoto": "Расм юклаш",
+    "photoUploadFailed": "Расм юкланмади. Бошқа файл танланг.",
+    "saveError": "Сақлашда хатолик",
+    "description": "Тавсиф",
+    "descriptionOptional": "Тавсиф (ихтиёрий)",
+    "copy": "Нусха олиш",
+    "copied": "Нусха олинди",
+    "clear": "Тозалаш",
+    "menu": "Меню",
+    "seconds": "сония",
+    "edited": "таҳрирланган",
+    "zoomIn": "Катталаштириш",
+    "zoomOut": "Кичиклаштириш",
+    "prev": "Олдинги",
+    "next": "Кейинги"
+  },
+  "language": {
+    "title": "Тил",
+    "uzLatn": "O'zbek (Lotin)",
+    "uzCyrl": "Ўзбек (Кирил)",
+    "ru": "Русский"
+  },
+  "theme": {
+    "lightMode": "Ёруғ режим",
+    "darkMode": "Қоронғу режим",
+    "enableLight": "Ёруғ режимни ёқиш",
+    "enableDark": "Қоронғу режимни ёқиш"
+  },
+  "auth": {
+    "loginTitle": "Metrogram'га кириш",
+    "addAccountTitle": "Янги аккаунт қўшиш",
+    "loginSubtitle": "Давлат кодини тасдиқланг ва телефон рақамингизни киритинг.",
+    "addAccountSubtitle": "Қўшимча профилингиз учун телефон ва паролни киритинг.",
+    "password": "Парол",
+    "passwordHint": "Ҳисобингиз паролини киритинг.",
+    "checking": "Текширилмоқда...",
+    "signIn": "Кириш",
+    "phoneIncomplete": "Телефон рақамини тўлиқ киритинг",
+    "passwordMin": "Парол камида 6 та белгидан иборат бўлиши керак",
+    "invalidCredentials": "Телефон рақам ёки парол нотўғри",
+    "maxAccounts": "Энг кўпи билан {{count}} та аккаунт қўшиш мумкин",
+    "changePhone": "Телефон рақамни ўзгартириш",
+    "phone": "Телефон рақами",
+    "countrySearch": "Қидириш..."
+  },
+  "menu": {
+    "active": "Фаол",
+    "addAccount": "Аккаунт қўшиш",
+    "maxAccounts": "Максимум {{count}} та аккаунт",
+    "savedMessages": "Сақланган хабарлар",
+    "myChannels": "Каналларим",
+    "contacts": "Контактлар",
+    "admin": "Админ",
+    "settings": "Созламалар",
+    "more": "Яна",
+    "logout": "Чиқиш"
+  },
+  "settings": {
+    "title": "Созламалар",
+    "phone": "Телефон",
+    "username": "Username",
+    "bio": "Bio",
+    "notifications": "Билдиришномалар ва товушлар",
+    "dataStorage": "Маълумотлар ва хотира",
+    "privacy": "Махфийлик ва хавфсизлик",
+    "general": "Умумий созламалар",
+    "chatFolders": "Чат папкалари",
+    "stickers": "Стикерлар ва emoji",
+    "speakers": "Динамик ва камера",
+    "devices": "Қурилмалар",
+    "language": "Тил",
+    "keyboard": "Клавиатура тугмалари",
+    "premium": "Metrogram Premium",
+    "gift": "Совға юбориш",
+    "logOut": "Чиқиш",
+    "profileLoading": "Профил юкланмоқда...",
+    "profileNotFound": "Профил топилмади",
+    "qrCode": "QR код",
+    "editProfile": "Профилни таҳрирлаш",
+    "more": "Кўпроқ"
+  },
+  "profile": {
+    "name": "Исм",
+    "lastName": "Фамилия",
+    "position": "Лавозим",
+    "positionPlaceholder": "Дастурчи",
+    "bioOptional": "Bio (ихтиёрий)",
+    "usernameOptional": "Username (ихтиёрий)",
+    "personalChannel": "Шахсий канал",
+    "channel": "Канал",
+    "editTitle": "Профилни таҳрирлаш"
+  },
+  "categories": {
+    "all": "Ҳаммаси",
+    "personal": "Шахсий",
+    "group": "Гуруҳлар",
+    "channel": "Каналлар",
+    "bot": "Бот",
+    "ariaTablist": "Чат категориялари",
+    "scrollLeft": "Чапга scroll",
+    "scrollRight": "Ўнга scroll"
+  },
+  "sidebar": {
+    "empty": {
+      "all": "Ҳали суҳбатлар йўқ",
+      "personal": "Шахсий суҳбатлар йўқ",
+      "group": "Гуруҳлар йўқ",
+      "channel": "Каналлар йўқ",
+      "bot": "Ботлар йўқ",
+      "hintChannel": "Пастдаги тугма орқали канал яратинг",
+      "hintPersonal": "Админ орқали фойдаланувчи қўшинг",
+      "hintDefault": "Маълумотлар backendдан юкланади"
+    },
+    "loadFailed": "Суҳбатларни юклаб бўлмади",
+    "leave": {
+      "channelTitle": "Каналдан чиқиш",
+      "groupTitle": "Гуруҳдан чиқиш",
+      "channelDescription": "Ҳақиқатан ҳам каналдан чиқмоқчимисиз? Ёзишмаларингиз қолади, лекин энди аъзо бўлмайсиз.",
+      "groupDescription": "Ҳақиқатан ҳам гуруҳдан чиқмоқчимисиз? Ёзишмаларингиз қолади, лекин энди аъзо бўлмайсиз.",
+      "confirm": "Чиқиш"
+    },
+    "deleteCountdown": "\"{{title}}\" ўчирилади",
+    "deleteFallback": "Суҳбат",
+    "menu": {
+      "pin": "Қадaш",
+      "unpin": "Қадaшни олиб ташлаш",
+      "markRead": "Ўқилган деб белгилаш",
+      "leaveChannel": "Каналдан чиқиш",
+      "leaveGroup": "Гуруҳдан чиқиш",
+      "deleteChat": "Суҳбатни ўчириш"
+    }
+  },
+  "fab": {
+    "newChannel": "Янги канал",
+    "newGroup": "Янги гуруҳ",
+    "open": "Янги хабар"
+  },
+  "notifications": {
+    "banner": "Хабарларни ўтказиб юборманг! 🔔 Янгиланишлардан хабардор бўлиш учун билдиришномаларни ёқинг."
+  },
+  "chat": {
+    "selectOrStart": "Суҳбатни танланг ёки янгисини бошланг",
+    "greeting": "Салом! 👋",
+    "sendFailed": "Хабар юбориб бўлмади",
+    "voiceSendFailed": "Овозли хабар юбориб бўлмади",
+    "composerEdit": "Хабарни таҳрирланг...",
+    "composerDefault": "Хабар ёзинг...",
+    "deleteBulkTitle": "Хабарларни ўчириш",
+    "deleteSingleTitle": "Хабарни ўчириш",
+    "deleteBulkDescription": "Ҳақиқатан ҳам {{count}} та хабарни ўчиришни хоҳлайсизми? Бу амални ортга қайтариб бўлмайди.",
+    "deleteSingleDescription": "Ҳақиқатан ҳам бу хабарни ўчиришни хоҳлайсизми? Бу амални ортга қайтариб бўлмайди.",
+    "empty": {
+      "title": "Ҳали хабарлар йўқ...",
+      "hint": "Хабар юборинг ёки саломлашиш учун пастдаги белгини босинг.",
+      "startWith": "{{name}} билан суҳбатни бошланг",
+      "greet": "Салом юбориш",
+      "channelReadOnly": "Бу каналда фақат администратор хабар юбориши мумкин."
+    },
+    "header": {
+      "cancel": "Бекор қилиш",
+      "call": "Қўнғироқ",
+      "search": "Қидириш",
+      "selectMessages": "Хабарларни танлаш",
+      "leaveChannel": "Каналдан чиқиш",
+      "leaveGroup": "Гуруҳдан чиқиш",
+      "more": "Кўпроқ"
+    },
+    "search": {
+      "placeholder": "Қидириш",
+      "prev": "Олдинги натижа",
+      "next": "Кейинги натижа",
+      "byDate": "Сана бўйича"
+    },
+    "skeleton": {
+      "list": "Чатлар юкланмоқда",
+      "header": "Чат сарлавҳаси юкланмоқда",
+      "messages": "Хабарлар юкланмоқда"
+    }
+  },
+  "message": {
+    "menu": {
+      "reply": "Жавоб бериш",
+      "pin": "Қадaш",
+      "download": "Юклаб олиш",
+      "forward": "Узатиш",
+      "select": "Танлаш",
+      "delete": "Ўчириш",
+      "edit": "Таҳрирлаш",
+      "copy": "Нусха олиш"
+    },
+    "pin": {
+      "title": "Хабарни қадaш",
+      "description": "Ушбу хабарни чатнинг юқори қисмига қадaшни хоҳлайсизми?",
+      "alsoFor": "{{name}} учун ҳам қадaш",
+      "confirm": "Қадaш"
+    },
+    "pinned": {
+      "label": "Қаданган хабар",
+      "unpin": "Қадaшни олиб ташлаш"
+    },
+    "forwardedFrom": "{{name}} дан узатилган",
+    "forwardedChat": "чат",
+    "attachment": {
+      "image": "Расм",
+      "video": "Видео",
+      "voice": "Овозли хабар",
+      "pdf": "PDF",
+      "json": "JSON",
+      "file": "Файл"
+    },
+    "status": {
+      "read": "Ўқилган",
+      "delivered": "Етказилган"
+    },
+    "select": "Танлаш",
+    "deselect": "Танловни олиб ташлаш",
+    "download": "Юклаб олиш",
+    "viewImage": "Расм кўриш",
+    "viewVideo": "Видео кўриш",
+    "enlargeImage": "Расмни катталаштириш",
+    "enlargeVideo": "Видеони катталаштириш"
+  },
+  "composer": {
+    "attach": "Файл бириктириш",
+    "emoji": "Emoji ва стикерлар",
+    "voice": "Овозли хабар",
+    "send": "Юбориш",
+    "draft": {
+      "reply": "Жавоб",
+      "edit": "Хабарни таҳрирлаш",
+      "forward": "Хабарни узатиш",
+      "replyTo": "{{name}} га жавоб",
+      "you": "Сиз:",
+      "media": "Медиа"
+    },
+    "emojiSearch": "Emoji қидириш",
+    "emojiTab": "Emoji",
+    "stickersTab": "Стикерлар",
+    "delete": "Ўчириш"
+  },
+  "selection": {
+    "count_one": "{{count}} хабар",
+    "count_other": "{{count}} хабар"
+  },
+  "forward": {
+    "title": "Кимга узатиш",
+    "empty": "Суҳбат топилмади",
+    "fallback": "Чат"
+  },
+  "presence": {
+    "typing": "ёзмоқда...",
+    "online": "онлайн",
+    "lastSeenRecently": "яқинда кўрилган",
+    "lastSeenToday": "бугун соат {{time}} да кўрилган",
+    "lastSeenYesterday": "кеча соат {{time}} да кўрилган",
+    "lastSeenDate": "{{date}}, соат {{time}} да кўрилган"
+  },
+  "time": {
+    "today": "Бугун",
+    "yesterday": "Кеча"
+  },
+  "chatList": {
+    "ownPrefix": "Сиз: {{text}}"
+  },
+  "search": {
+    "recent": "Сўнгги суҳбатлар",
+    "contacts": "Контактлар",
+    "conversations": "Суҳбатлар",
+    "groups": "Гуруҳлар",
+    "channels": "Каналлар",
+    "bots": "Ботлар",
+    "noContact": "Контакт топилмади",
+    "noResults": "Натижа топилмади"
+  },
+  "contacts": {
+    "title": "Контактлар",
+    "empty": "Ҳали контактлар йўқ"
+  },
+  "info": {
+    "groupTitle": "Гуруҳ ҳақида",
+    "userTitle": "Фойдаланувчи ҳақида",
+    "channelTitle": "Канал ҳақида",
+    "description": "Маълумот",
+    "groupInvite": "Очиқ гуруҳ ҳаволаси",
+    "channelLink": "Ҳавола",
+    "tabs": {
+      "media": "Медиа",
+      "files": "Файллар",
+      "links": "Ҳаволалар",
+      "voice": "Овоз",
+      "members": "Аъзолар"
+    },
+    "username": "Username",
+    "notifications": "Билдиришномалар",
+    "memberOwner": "эгаси",
+    "memberAdmin": "Админ",
+    "membersEmpty": "Аъзолар йўқ",
+    "noConversation": "Суҳбат танланмаган",
+    "mediaEmpty": "Ҳали медиа йўқ",
+    "videoBadge": "▶ Видео",
+    "linksEmpty": "Ҳали ҳаволалар йўқ",
+    "voiceEmpty": "Ҳали овозли хабарлар йўқ",
+    "filesEmpty": "Ҳали файллар йўқ",
+    "membersAdd": "Аъзо қўшиш",
+    "membersAddTitle": "Аъзо қўшиш",
+    "membersAddEmpty": "Қўшиш учун контакт топилмади",
+    "membersAddConfirm": "Аъзоларни қўшиш",
+    "membersCount_one": "1 аъзо",
+    "membersCount_other": "{{count}} аъзо",
+    "channelStats": "{{total}} аъзо, {{online}} фаол",
+    "editChannel": "Канални таҳрирлаш",
+    "editGroup": "Гуруҳни таҳрирлаш",
+    "channelNameRequired": "Канал номи мажбурий",
+    "groupNameRequired": "Гуруҳ номи мажбурий",
+    "channelName": "Канал номи",
+    "groupName": "Гуруҳ номи"
+  },
+  "createChannel": {
+    "title": "Янги канал",
+    "name": "Канал номи",
+    "descriptionHint": "Каналингиз учун ихтиёрий тавсиф киритишингиз мумкин.",
+    "subscribersTitle": "Обуначилар қўшиш",
+    "subscribersEmpty": "Контактлар топилмади",
+    "create": "Канал яратиш",
+    "confirmAddTitle": "Аъзо қўшиш",
+    "confirmAddDescription": "{{name}} ни {{channelName}} каналига қўшмоқчимисиз?"
+  },
+  "createGroup": {
+    "title": "Янги гуруҳ",
+    "avatar": "Гуруҳ расми",
+    "name": "Гуруҳ номи",
+    "typeLabel": "Гуруҳ тури",
+    "typePrivate": "Махфий гуруҳ",
+    "typePrivateDesc": "Фақат қўшилган аъзолар хабар ёзиши ва ўқиши мумкин",
+    "typePublic": "Очиқ гуруҳ",
+    "typePublicDesc": "Ҳавола орқали исталган киши қўшилиши ва ёзиши мумкин",
+    "membersTitle": "Аъзолар қўшиш",
+    "membersEmpty": "Контактлар топилмади",
+    "create": "Гуруҳ яратиш"
+  },
+  "calendar": {
+    "prevMonth": "Олдинги ой",
+    "nextMonth": "Кейинги ой"
+  },
+  "voice": {
+    "transcribe": "Транскрипция",
+    "cancel": "Бекор қилиш",
+    "send": "Юбориш"
+  },
+  "admin": {
+    "title": "Админ",
+    "subtitle": "Бошқарув маркази",
+    "description": "Telegram админ панели — фойдаланувчилар, контент ва тизим хизматлари",
+    "placeholder": "{{title}} хизмати ҳозирча ишлаб чиқилмоқда. Кейинги янгиланишда қўшилади.",
+    "register": "Фойдаланувчи қўшиш",
+    "users": "Барча фойдаланувчилар",
+    "usersSubtitle": "{{count}} та фойдаланувчи · таҳрирлаш учун босинг",
+    "usersSearch": "Исм, username ёки телефон",
+    "usersEmpty": "Фойдаланувчилар топилмади",
+    "usersEmptyHint": "\"Фойдаланувчи қўшиш\" орқали биринчи контактни яратинг",
+    "editTitle": "Таҳрирлаш",
+    "editNameRequired": "Исм ва фамилия мажбурий",
+    "editUsernameMin": "Username камида 3 та белгидан иборат бўлиши керак",
+    "editPasswordMin": "Янги парол камида 6 та белгидан иборат бўлиши керак",
+    "firstName": "Исм",
+    "lastName": "Фамилия",
+    "phone": "Телефон",
+    "position": "Лавозим",
+    "bio": "Bio",
+    "username": "Username",
+    "birthYear": "Туғилган йили",
+    "birthYearPlaceholder": "1998",
+    "channels": "Каналлар (вергул билан)",
+    "channelNamesPlaceholder": "Канал номлари (вергул ёки янги қатор билан)",
+    "passwordSection": "Паролни янгилаш",
+    "newPassword": "Янги парол (ихтиёрий)",
+    "passwordPlaceholder": "Admin reset",
+    "passwordHint": "Бўш қолдирсангиз, фойдаланувчи пароли ўзгармайди.",
+    "confirmPassword": "Паролни тасдиқлаш",
+    "confirmPasswordPlaceholder": "Паролни қайта киритинг",
+    "passwordMinPlaceholder": "Камида 6 та белги",
+    "section": {
+      "users": "Фойдаланувчилар",
+      "content": "Контент",
+      "messages": "Хабарлар",
+      "security": "Хавфсизлик",
+      "system": "Тизим"
+    },
+    "services": {
+      "register": "Фойдаланувчи қўшиш",
+      "registerDesc": "Янги контакт рўйхатдан ўтказиш",
+      "users": "Барча фойдаланувчилар",
+      "usersDesc": "Рўйхатдан ўтганлар рўйхати",
+      "contacts": "Контактлар",
+      "contactsDesc": "Телефон китоби",
+      "banned": "Бан қилинганлар",
+      "bannedDesc": "Чекланган аккаунтлар",
+      "channels": "Каналлар бошқаруви",
+      "channelsDesc": "Каналлар ва обуначилар",
+      "groups": "Гуруҳлар бошқаруви",
+      "groupsDesc": "Гуруҳ аъзолари ва ҳуқуқлар",
+      "bots": "Ботлар",
+      "botsDesc": "Бот токенлари ва созламалар",
+      "broadcast": "Broadcast хабар",
+      "broadcastDesc": "Оммавий хабар юбориш",
+      "stats": "Статистика",
+      "statsDesc": "Фаоллик ва хабарлар ҳисоботи",
+      "admins": "Админлар",
+      "adminsDesc": "Ҳуқуқлар ва роллар",
+      "sessions": "Фаол сессиялар",
+      "sessionsDesc": "Қурилмалар ва киришлар",
+      "settings": "Тизим созламалари",
+      "settingsDesc": "Умумий админ параметрлари"
+    }
+  },
+  "errors": {
+    "imageTooLarge": "Расм жуда катта. Илтимос кичикроқ расм танланг."
+  }
+}

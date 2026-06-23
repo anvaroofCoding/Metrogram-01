@@ -1,0 +1,443 @@
+{
+  "common": {
+    "back": "Назад",
+    "close": "Закрыть",
+    "cancel": "Отмена",
+    "save": "Сохранить",
+    "done": "Готово",
+    "search": "Поиск",
+    "edit": "Редактировать",
+    "next": "Далее",
+    "add": "Добавить",
+    "delete": "Удалить",
+    "forward": "Переслать",
+    "yes": "Да",
+    "loading": "Загрузка...",
+    "loadingContent": "Загрузка...",
+    "loadFailed": "Не удалось загрузить",
+    "retry": "Повторить",
+    "noResults": "Ничего не найдено",
+    "comingSoon": "Скоро",
+    "uploadPhoto": "Загрузить фото",
+    "photoUploadFailed": "Не удалось загрузить фото. Выберите другой файл.",
+    "saveError": "Ошибка сохранения",
+    "description": "Описание",
+    "descriptionOptional": "Описание (необязательно)",
+    "copy": "Копировать",
+    "copied": "Скопировано",
+    "clear": "Очистить",
+    "menu": "Меню",
+    "seconds": "сек",
+    "edited": "изменено",
+    "zoomIn": "Увеличить",
+    "zoomOut": "Уменьшить",
+    "prev": "Назад",
+    "next": "Далее"
+  },
+  "language": {
+    "title": "Язык",
+    "uzLatn": "O'zbek (Lotin)",
+    "uzCyrl": "Ўзбек (Кирил)",
+    "ru": "Русский"
+  },
+  "theme": {
+    "lightMode": "Светлая тема",
+    "darkMode": "Тёмная тема",
+    "enableLight": "Включить светлую тему",
+    "enableDark": "Включить тёмную тему"
+  },
+  "auth": {
+    "loginTitle": "Вход в Metrogram",
+    "addAccountTitle": "Добавить аккаунт",
+    "loginSubtitle": "Подтвердите код страны и введите номер телефона.",
+    "addAccountSubtitle": "Введите телефон и пароль для дополнительного профиля.",
+    "password": "Пароль",
+    "passwordHint": "Введите пароль вашего аккаунта.",
+    "checking": "Проверка...",
+    "signIn": "Войти",
+    "phoneIncomplete": "Введите полный номер телефона",
+    "passwordMin": "Пароль должен содержать не менее 6 символов",
+    "invalidCredentials": "Неверный телефон или пароль",
+    "maxAccounts": "Можно добавить не более {{count}} аккаунтов",
+    "changePhone": "Изменить номер телефона",
+    "phone": "Номер телефона",
+    "countrySearch": "Поиск..."
+  },
+  "menu": {
+    "active": "Активный",
+    "addAccount": "Добавить аккаунт",
+    "maxAccounts": "Максимум {{count}} аккаунтов",
+    "savedMessages": "Избранное",
+    "myChannels": "Мои каналы",
+    "contacts": "Контакты",
+    "admin": "Админ",
+    "settings": "Настройки",
+    "more": "Ещё",
+    "logout": "Выйти"
+  },
+  "settings": {
+    "title": "Настройки",
+    "phone": "Телефон",
+    "username": "Имя пользователя",
+    "bio": "О себе",
+    "notifications": "Уведомления и звуки",
+    "dataStorage": "Данные и память",
+    "privacy": "Конфиденциальность и безопасность",
+    "general": "Общие настройки",
+    "chatFolders": "Папки чатов",
+    "stickers": "Стикеры и эмодзи",
+    "speakers": "Динамик и камера",
+    "devices": "Устройства",
+    "language": "Язык",
+    "keyboard": "Горячие клавиши",
+    "premium": "Metrogram Premium",
+    "gift": "Отправить подарок",
+    "logOut": "Выйти",
+    "profileLoading": "Загрузка профиля...",
+    "profileNotFound": "Профиль не найден",
+    "qrCode": "QR-код",
+    "editProfile": "Редактировать профиль",
+    "more": "Ещё"
+  },
+  "profile": {
+    "name": "Имя",
+    "lastName": "Фамилия",
+    "position": "Должность",
+    "positionPlaceholder": "Разработчик",
+    "bioOptional": "О себе (необязательно)",
+    "usernameOptional": "Имя пользователя (необязательно)",
+    "personalChannel": "Личный канал",
+    "channel": "Канал",
+    "editTitle": "Редактировать профиль"
+  },
+  "categories": {
+    "all": "Все",
+    "personal": "Личные",
+    "group": "Группы",
+    "channel": "Каналы",
+    "bot": "Боты",
+    "ariaTablist": "Категории чатов",
+    "scrollLeft": "Прокрутить влево",
+    "scrollRight": "Прокрутить вправо"
+  },
+  "sidebar": {
+    "empty": {
+      "all": "Пока нет чатов",
+      "personal": "Нет личных чатов",
+      "group": "Нет групп",
+      "channel": "Нет каналов",
+      "bot": "Нет ботов",
+      "hintChannel": "Создайте канал с помощью кнопки внизу",
+      "hintPersonal": "Добавьте пользователя через админ-панель",
+      "hintDefault": "Данные загружаются с сервера"
+    },
+    "loadFailed": "Не удалось загрузить чаты",
+    "leave": {
+      "channelTitle": "Покинуть канал",
+      "groupTitle": "Покинуть группу",
+      "channelDescription": "Вы уверены, что хотите покинуть канал? Переписка сохранится, но вы больше не будете участником.",
+      "groupDescription": "Вы уверены, что хотите покинуть группу? Переписка сохранится, но вы больше не будете участником.",
+      "confirm": "Выйти"
+    },
+    "deleteCountdown": "\"{{title}}\" будет удалён",
+    "deleteFallback": "Чат",
+    "menu": {
+      "pin": "Закрепить",
+      "unpin": "Открепить",
+      "markRead": "Отметить прочитанным",
+      "leaveChannel": "Покинуть канал",
+      "leaveGroup": "Покинуть группу",
+      "deleteChat": "Удалить чат"
+    }
+  },
+  "fab": {
+    "newChannel": "Новый канал",
+    "newGroup": "Новая группа",
+    "open": "Новое сообщение"
+  },
+  "notifications": {
+    "banner": "Не пропускайте сообщения! 🔔 Включите уведомления, чтобы быть в курсе."
+  },
+  "chat": {
+    "selectOrStart": "Выберите чат или начните новый",
+    "greeting": "Привет! 👋",
+    "sendFailed": "Не удалось отправить сообщение",
+    "voiceSendFailed": "Не удалось отправить голосовое сообщение",
+    "composerEdit": "Редактировать сообщение...",
+    "composerDefault": "Напишите сообщение...",
+    "deleteBulkTitle": "Удалить сообщения",
+    "deleteSingleTitle": "Удалить сообщение",
+    "deleteBulkDescription": "Удалить {{count}} сообщений? Это действие нельзя отменить.",
+    "deleteSingleDescription": "Удалить это сообщение? Это действие нельзя отменить.",
+    "empty": {
+      "title": "Пока нет сообщений...",
+      "hint": "Отправьте сообщение или нажмите кнопку ниже, чтобы поздороваться.",
+      "startWith": "Начните чат с {{name}}",
+      "greet": "Отправить приветствие",
+      "channelReadOnly": "В этом канале только администратор может отправлять сообщения."
+    },
+    "header": {
+      "cancel": "Отмена",
+      "call": "Позвонить",
+      "search": "Поиск",
+      "selectMessages": "Выбрать сообщения",
+      "leaveChannel": "Покинуть канал",
+      "leaveGroup": "Покинуть группу",
+      "more": "Ещё"
+    },
+    "search": {
+      "placeholder": "Поиск",
+      "prev": "Предыдущий результат",
+      "next": "Следующий результат",
+      "byDate": "По дате"
+    },
+    "skeleton": {
+      "list": "Загрузка чатов",
+      "header": "Загрузка заголовка чата",
+      "messages": "Загрузка сообщений"
+    }
+  },
+  "message": {
+    "menu": {
+      "reply": "Ответить",
+      "pin": "Закрепить",
+      "download": "Скачать",
+      "forward": "Переслать",
+      "select": "Выбрать",
+      "delete": "Удалить",
+      "edit": "Редактировать",
+      "copy": "Копировать"
+    },
+    "pin": {
+      "title": "Закрепить сообщение",
+      "description": "Закрепить это сообщение вверху чата?",
+      "alsoFor": "Также закрепить для {{name}}",
+      "confirm": "Закрепить"
+    },
+    "pinned": {
+      "label": "Закреплённое сообщение",
+      "unpin": "Открепить"
+    },
+    "forwardedFrom": "Переслано от {{name}}",
+    "forwardedChat": "чат",
+    "attachment": {
+      "image": "Фото",
+      "video": "Видео",
+      "voice": "Голосовое сообщение",
+      "pdf": "PDF",
+      "json": "JSON",
+      "file": "Файл"
+    },
+    "status": {
+      "read": "Прочитано",
+      "delivered": "Доставлено"
+    },
+    "select": "Выбрать",
+    "deselect": "Снять выбор",
+    "download": "Скачать",
+    "viewImage": "Просмотр фото",
+    "viewVideo": "Просмотр видео",
+    "enlargeImage": "Увеличить фото",
+    "enlargeVideo": "Увеличить видео"
+  },
+  "composer": {
+    "attach": "Прикрепить файл",
+    "emoji": "Эмодзи и стикеры",
+    "voice": "Голосовое сообщение",
+    "send": "Отправить",
+    "draft": {
+      "reply": "Ответ",
+      "edit": "Редактировать сообщение",
+      "forward": "Переслать сообщение",
+      "replyTo": "Ответ {{name}}",
+      "you": "Вы:",
+      "media": "Медиа"
+    },
+    "emojiSearch": "Поиск эмодзи",
+    "emojiTab": "Эмодзи",
+    "stickersTab": "Стикеры",
+    "delete": "Удалить"
+  },
+  "selection": {
+    "count_one": "{{count}} сообщение",
+    "count_few": "{{count}} сообщения",
+    "count_many": "{{count}} сообщений",
+    "count_other": "{{count}} сообщений"
+  },
+  "forward": {
+    "title": "Поделиться с",
+    "empty": "Чат не найден",
+    "fallback": "Чат"
+  },
+  "presence": {
+    "typing": "печатает...",
+    "online": "в сети",
+    "lastSeenRecently": "был(а) недавно",
+    "lastSeenToday": "был(а) сегодня в {{time}}",
+    "lastSeenYesterday": "был(а) вчера в {{time}}",
+    "lastSeenDate": "был(а) {{date}} в {{time}}"
+  },
+  "time": {
+    "today": "Сегодня",
+    "yesterday": "Вчера"
+  },
+  "chatList": {
+    "ownPrefix": "Вы: {{text}}"
+  },
+  "search": {
+    "recent": "Недавние чаты",
+    "contacts": "Контакты",
+    "conversations": "Чаты",
+    "groups": "Группы",
+    "channels": "Каналы",
+    "bots": "Боты",
+    "noContact": "Контакт не найден",
+    "noResults": "Ничего не найдено"
+  },
+  "contacts": {
+    "title": "Контакты",
+    "empty": "Пока нет контактов"
+  },
+  "info": {
+    "groupTitle": "О группе",
+    "userTitle": "О пользователе",
+    "channelTitle": "О канале",
+    "description": "Информация",
+    "groupInvite": "Ссылка на открытую группу",
+    "channelLink": "Ссылка",
+    "tabs": {
+      "media": "Медиа",
+      "files": "Файлы",
+      "links": "Ссылки",
+      "voice": "Голос",
+      "members": "Участники"
+    },
+    "username": "Имя пользователя",
+    "notifications": "Уведомления",
+    "memberOwner": "владелец",
+    "memberAdmin": "Админ",
+    "membersEmpty": "Нет участников",
+    "noConversation": "Чат не выбран",
+    "mediaEmpty": "Пока нет медиа",
+    "videoBadge": "▶ Видео",
+    "linksEmpty": "Пока нет ссылок",
+    "voiceEmpty": "Пока нет голосовых сообщений",
+    "filesEmpty": "Пока нет файлов",
+    "membersAdd": "Добавить участника",
+    "membersAddTitle": "Добавить участников",
+    "membersAddEmpty": "Нет контактов для добавления",
+    "membersAddConfirm": "Добавить участников",
+    "membersCount_one": "1 участник",
+    "membersCount_few": "{{count}} участника",
+    "membersCount_many": "{{count}} участников",
+    "membersCount_other": "{{count}} участников",
+    "channelStats": "{{total}} участников, {{online}} в сети",
+    "editChannel": "Редактировать канал",
+    "editGroup": "Редактировать группу",
+    "channelNameRequired": "Название канала обязательно",
+    "groupNameRequired": "Название группы обязательно",
+    "channelName": "Название канала",
+    "groupName": "Название группы"
+  },
+  "createChannel": {
+    "title": "Новый канал",
+    "name": "Название канала",
+    "descriptionHint": "Вы можете добавить необязательное описание для канала.",
+    "subscribersTitle": "Добавить подписчиков",
+    "subscribersEmpty": "Контакты не найдены",
+    "create": "Создать канал",
+    "confirmAddTitle": "Добавить участника",
+    "confirmAddDescription": "Добавить {{name}} в канал {{channelName}}?"
+  },
+  "createGroup": {
+    "title": "Новая группа",
+    "avatar": "Фото группы",
+    "name": "Название группы",
+    "typeLabel": "Тип группы",
+    "typePrivate": "Закрытая группа",
+    "typePrivateDesc": "Только добавленные участники могут писать и читать сообщения",
+    "typePublic": "Открытая группа",
+    "typePublicDesc": "Любой может присоединиться и писать по ссылке",
+    "membersTitle": "Добавить участников",
+    "membersEmpty": "Контакты не найдены",
+    "create": "Создать группу"
+  },
+  "calendar": {
+    "prevMonth": "Предыдущий месяц",
+    "nextMonth": "Следующий месяц"
+  },
+  "voice": {
+    "transcribe": "Транскрипция",
+    "cancel": "Отмена",
+    "send": "Отправить"
+  },
+  "admin": {
+    "title": "Админ",
+    "subtitle": "Центр управления",
+    "description": "Админ-панель — пользователи, контент и системные сервисы",
+    "placeholder": "Сервис «{{title}}» пока в разработке. Будет добавлен в следующем обновлении.",
+    "register": "Добавить пользователя",
+    "users": "Все пользователи",
+    "usersSubtitle": "{{count}} пользователей · нажмите для редактирования",
+    "usersSearch": "Имя, username или телефон",
+    "usersEmpty": "Пользователи не найдены",
+    "usersEmptyHint": "Создайте первый контакт через «Добавить пользователя»",
+    "editTitle": "Редактировать",
+    "editNameRequired": "Имя и фамилия обязательны",
+    "editUsernameMin": "Имя пользователя должно содержать не менее 3 символов",
+    "editPasswordMin": "Новый пароль должен содержать не менее 6 символов",
+    "firstName": "Имя",
+    "lastName": "Фамилия",
+    "phone": "Телефон",
+    "position": "Должность",
+    "bio": "О себе",
+    "username": "Имя пользователя",
+    "birthYear": "Год рождения",
+    "birthYearPlaceholder": "1998",
+    "channels": "Каналы (через запятую)",
+    "channelNamesPlaceholder": "Названия каналов (через запятую или с новой строки)",
+    "passwordSection": "Смена пароля",
+    "newPassword": "Новый пароль (необязательно)",
+    "passwordPlaceholder": "Сброс админом",
+    "passwordHint": "Если оставить пустым, пароль пользователя не изменится.",
+    "confirmPassword": "Подтвердите пароль",
+    "confirmPasswordPlaceholder": "Повторите пароль",
+    "passwordMinPlaceholder": "Не менее 6 символов",
+    "section": {
+      "users": "Пользователи",
+      "content": "Контент",
+      "messages": "Сообщения",
+      "security": "Безопасность",
+      "system": "Система"
+    },
+    "services": {
+      "register": "Добавить пользователя",
+      "registerDesc": "Регистрация нового контакта",
+      "users": "Все пользователи",
+      "usersDesc": "Список зарегистрированных",
+      "contacts": "Контакты",
+      "contactsDesc": "Телефонная книга",
+      "banned": "Заблокированные",
+      "bannedDesc": "Ограниченные аккаунты",
+      "channels": "Управление каналами",
+      "channelsDesc": "Каналы и подписчики",
+      "groups": "Управление группами",
+      "groupsDesc": "Участники и права групп",
+      "bots": "Боты",
+      "botsDesc": "Токены и настройки ботов",
+      "broadcast": "Рассылка",
+      "broadcastDesc": "Массовая отправка сообщений",
+      "stats": "Статистика",
+      "statsDesc": "Отчёт об активности и сообщениях",
+      "admins": "Администраторы",
+      "adminsDesc": "Права и роли",
+      "sessions": "Активные сессии",
+      "sessionsDesc": "Устройства и входы",
+      "settings": "Системные настройки",
+      "settingsDesc": "Общие параметры админки"
+    }
+  },
+  "errors": {
+    "imageTooLarge": "Фото слишком большое. Выберите файл меньшего размера."
+  }
+}

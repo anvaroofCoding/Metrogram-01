@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import { Composer } from "@/components/ui/composer";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
@@ -70,8 +71,6 @@ type DeleteConfirmTarget =
   | { type: "single"; messageId: string }
   | { type: "bulk"; ids: string[] };
 
-const GREETING_MESSAGE = "Salom! 👋";
-
 type TimelineItem =
   | { type: "date"; dateKey: string; label: string }
   | { type: "group"; variant: "sent" | "received"; messages: Message[] };
@@ -124,6 +123,7 @@ export function ChatWindow({
   actionsRef,
   onSelectionChange,
 }: ChatWindowProps) {
+  const { t } = useTranslation();
   const isChannel = conversationCategory === "channel";
   const scrollRef = useRef<HTMLDivElement>(null);
   const { sendTyping } = useRealtime();
@@ -282,7 +282,7 @@ export function ChatWindow({
         setComposerDraft(null);
         setComposerValue("");
       } catch (err) {
-        setSendError(err instanceof Error ? err.message : "Xabar yuborib bo'lmadi");
+        setSendError(err instanceof Error ? err.message : t("chat.sendFailed"));
         throw err;
       } finally {
         setIsUploading(false);
@@ -310,7 +310,7 @@ export function ChatWindow({
           clientId: `client-${Date.now()}`,
         });
       } catch (err) {
-        setSendError(err instanceof Error ? err.message : "Ovozli xabar yuborib bo'lmadi");
+        setSendError(err instanceof Error ? err.message : t("chat.voiceSendFailed"));
       } finally {
         setIsUploading(false);
       }
@@ -445,10 +445,6 @@ export function ChatWindow({
     sendTyping(conversationId, value.length > 0);
   };
 
-  const handleGreet = () => {
-    void handleSubmit(GREETING_MESSAGE);
-  };
-
   return (
     <div className="relative flex min-w-0 flex-1 flex-col overflow-x-hidden">
       {pinnedMessage && (
@@ -461,17 +457,24 @@ export function ChatWindow({
 
       <div
         ref={scrollRef}
-        className="flex min-h-0 flex-1 flex-col overflow-x-hidden overflow-y-auto bg-white px-8 py-4 [--chat-surface:#ffffff] dark:bg-[#1e1e1e] dark:[--chat-surface:#1e1e1e]"
+        className="chat-messages-scroll flex min-h-0 flex-1 flex-col overflow-x-hidden overflow-y-auto bg-white px-3 py-3 [--chat-surface:#ffffff] md:px-8 md:py-4 dark:bg-[#1e1e1e] dark:[--chat-surface:#1e1e1e]"
+        onMouseDown={(event) => {
+          if (selectionMode) return;
+          const target = event.target as HTMLElement;
+          if (
+            target.closest(
+              "button, a, input, textarea, .imessage-bubble, .code-block, video, img",
+            )
+          ) {
+            return;
+          }
+          window.getSelection()?.removeAllRanges();
+        }}
       >
         {isLoading ? (
           <ChatMessageSkeleton />
         ) : isEmpty ? (
-          <ChatEmptyState
-            contactName={contactName}
-            onGreet={handleGreet}
-            disabled={isSending}
-            canCompose={canCompose}
-          />
+          <ChatEmptyState />
         ) : (
           <div className="mt-auto space-y-4">
             {timeline.map((item, i) =>
@@ -504,7 +507,7 @@ export function ChatWindow({
       </div>
 
       {canCompose && (
-        <footer className="min-w-0 shrink-0 px-4 pb-4 pt-2">
+        <footer className="safe-bottom min-w-0 shrink-0 px-2 pb-2 pt-1 md:px-4 md:pb-4 md:pt-2">
           {sendError && (
             <p className="mb-2 rounded-xl bg-red-500/10 px-3 py-2 text-center text-sm text-red-600 dark:text-red-400">
               {sendError}
@@ -529,7 +532,7 @@ export function ChatWindow({
             isLoading={isSending || isUploading}
             autoFocus
             placeholder={
-              composerDraft?.mode === "edit" ? "Xabarni tahrirlang..." : "Xabar yozing..."
+              composerDraft?.mode === "edit" ? t("chat.composerEdit") : t("chat.composerDefault")
             }
           />
         </footer>
@@ -563,16 +566,16 @@ export function ChatWindow({
         open={Boolean(deleteConfirm)}
         title={
           deleteConfirm?.type === "bulk"
-            ? "Xabarlarni o'chirish"
-            : "Xabarni o'chirish"
+            ? t("chat.deleteBulkTitle")
+            : t("chat.deleteSingleTitle")
         }
         description={
           deleteConfirm?.type === "bulk"
-            ? `Haqiqatan ham ${deleteConfirm.ids.length} ta xabarni o'chirmoqchimisiz? Bu amalni ortga qaytarib bo'lmaydi.`
-            : "Haqiqatan ham bu xabarni o'chirmoqchimisiz? Bu amalni ortga qaytarib bo'lmaydi."
+            ? t("chat.deleteBulkDescription", { count: deleteConfirm.ids.length })
+            : t("chat.deleteSingleDescription")
         }
-        confirmLabel="O'chirish"
-        cancelLabel="Bekor qilish"
+        confirmLabel={t("common.delete")}
+        cancelLabel={t("common.cancel")}
         danger
         onCancel={() => setDeleteConfirm(null)}
         onConfirm={() => void handleDeleteConfirm()}

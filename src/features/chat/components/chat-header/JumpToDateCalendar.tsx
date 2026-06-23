@@ -1,5 +1,7 @@
 import { useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Icon, IconChevronBack, IconChevronForward, IconClose } from "@/components/icons";
+import { formatMonthYear } from "@/i18n/app-date-format";
 import { cn } from "@/lib/utils";
 
 interface JumpToDateCalendarProps {
@@ -34,6 +36,7 @@ export function JumpToDateCalendar({
   initialDateKey,
   onJump,
 }: JumpToDateCalendarProps) {
+  const { t } = useTranslation();
   const today = new Date();
   const initial = initialDateKey ? new Date(initialDateKey) : today;
   const [viewYear, setViewYear] = useState(initial.getFullYear());
@@ -48,10 +51,7 @@ export function JumpToDateCalendar({
     [viewYear, viewMonth],
   );
 
-  const monthLabel = new Date(viewYear, viewMonth).toLocaleDateString("uz-UZ", {
-    month: "long",
-    year: "numeric",
-  });
+  const monthLabel = formatMonthYear(new Date(viewYear, viewMonth));
 
   const todayKey = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
 
@@ -74,7 +74,7 @@ export function JumpToDateCalendar({
       <button
         type="button"
         className="fixed inset-0 z-50 bg-black/30"
-        aria-label="Yopish"
+        aria-label={t("common.close")}
         onClick={onClose}
       />
 
@@ -89,7 +89,7 @@ export function JumpToDateCalendar({
             type="button"
             onClick={onClose}
             className="flex h-9 w-9 items-center justify-center rounded-full text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-800"
-            aria-label="Yopish"
+            aria-label={t("common.close")}
           >
             <Icon icon={IconClose} size={22} />
           </button>
@@ -101,7 +101,7 @@ export function JumpToDateCalendar({
               type="button"
               onClick={() => shiftMonth(-1)}
               className="flex h-8 w-8 items-center justify-center rounded-full text-[#00bbff] hover:bg-[#00bbff]/10"
-              aria-label="Oldingi oy"
+              aria-label={t("calendar.prevMonth")}
             >
               <Icon icon={IconChevronBack} size={18} />
             </button>
@@ -109,7 +109,7 @@ export function JumpToDateCalendar({
               type="button"
               onClick={() => shiftMonth(1)}
               className="flex h-8 w-8 items-center justify-center rounded-full text-[#00bbff] hover:bg-[#00bbff]/10"
-              aria-label="Keyingi oy"
+              aria-label={t("calendar.nextMonth")}
             >
               <Icon icon={IconChevronForward} size={18} />
             </button>

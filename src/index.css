@@ -50,6 +50,14 @@
     display: none;
   }
 
+  .safe-bottom {
+    padding-bottom: max(0.5rem, env(safe-area-inset-bottom, 0px));
+  }
+
+  .safe-top {
+    padding-top: max(0px, env(safe-area-inset-top, 0px));
+  }
+
   @keyframes skeleton-shimmer {
     0% {
       background-position: 200% 0;
@@ -82,5 +90,22 @@
   .emoji-apple {
     font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif;
     line-height: 1;
+  }
+
+  .chat-messages-scroll {
+    -webkit-user-select: none;
+    user-select: none;
+  }
+
+  .chat-messages-scroll .imessage-bubble,
+  .chat-messages-scroll .code-block,
+  .chat-messages-scroll input,
+  .chat-messages-scroll textarea {
+    -webkit-user-select: text;
+    user-select: text;
+  }
+
+  .media-lightbox::backdrop {
+    background: rgb(0 0 0 / 0.92);
   }
 }

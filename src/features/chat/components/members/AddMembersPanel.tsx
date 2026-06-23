@@ -1,16 +1,23 @@
 import { useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Icon, IconChevronBack, IconPersonAdd, IconSearch } from "@/components/icons";
 import { ContactAvatar } from "@/features/chat/components/create-channel/ContactAvatar";
 import { ConfirmMemberDialog } from "@/features/chat/components/create-channel/ConfirmMemberDialog";
 import { ChatListSkeleton } from "@/features/chat/components/sidebar/ChatListSkeleton";
 import { useAddMembersMutation } from "@/features/chat/api/chatApi";
-import { filterContactsForCurrentUser, isSelfContact } from "@/features/chat/lib/conversation-display";
+import {
+  dedupeContacts,
+  isContactAlreadyInConversation,
+  isSelfContact,
+} from "@/features/chat/lib/conversation-display";
+import { getCurrentUserId } from "@/features/auth/auth-session";
 import { useGetContactsQuery } from "@/features/users/api/usersApi";
 import { cn } from "@/lib/utils";
 import type { Contact, Conversation } from "@/types/chat";
 
 interface AddMembersPanelProps {
   conversation: Conversation;
+  contacts: Contact[];
   onBack: () => void;
   onAdded?: (conversation: Conversation) => void;
 }
@@ -35,26 +42,35 @@ function ContactCheckbox({ checked }: { checked: boolean }) {
   );
 }
 
-export function AddMembersPanel({ conversation, onBack, onAdded }: AddMembersPanelProps) {
+export function AddMembersPanel({
+  conversation,
+  contacts,
+  onBack,
+  onAdded,
+}: AddMembersPanelProps) {
+  const { t } = useTranslation();
   const [search, setSearch] = useState("");
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [pendingContact, setPendingContact] = useState<Contact | null>(null);
 
-  const { data: contacts = [], isLoading } = useGetContactsQuery({ search });
+  const trimmedSearch = search.trim();
+  const { data: searchResults = [], isLoading: isSearching } = useGetContactsQuery(
+    { search: trimmedSearch },
+    { skip: !trimmedSearch },
+  );
+
   const { mutateAsync: addMembers, isLoading: isAdding } = useAddMembersMutation();
 
-  const existingIds = useMemo(
-    () => new Set(conversation.participantIds),
-    [conversation.participantIds],
-  );
+  const sourceContacts = trimmedSearch ? searchResults : contacts;
 
-  const availableContacts = useMemo(
-    () =>
-      filterContactsForCurrentUser(contacts).filter(
-        (contact) => !existingIds.has(contact.id) && !isSelfContact(contact),
-      ),
-    [contacts, existingIds],
-  );
+  const availableContacts = useMemo(() => {
+    const visible = dedupeContacts(sourceContacts).filter(
+      (contact) =>
+        !isSelfContact(contact, getCurrentUserId(), contacts) &&
+        !isContactAlreadyInConversation(contact, conversation, contacts),
+    );
+    return visible;
+  }, [sourceContacts, contacts, conversation]);
 
   const toggleContact = (contact: Contact) => {
     if (selectedIds.includes(contact.id)) {
@@ -80,19 +96,21 @@ export function AddMembersPanel({ conversation, onBack, onAdded }: AddMembersPan
     onBack();
   };
 
+  const showLoading = trimmedSearch ? isSearching : false;
+
   return (
-    <div className="absolute inset-0 z-20 flex flex-col overflow-hidden rounded-[28px] bg-[#f4f4f5] dark:bg-[#1c1c1e]">
+    <div className="absolute inset-0 z-20 flex flex-col overflow-hidden rounded-[28px] bg-[#f4f4f5] dark:bg-[#1c1e1e]">
       <header className="flex shrink-0 items-center px-2 py-3">
         <button
           type="button"
           onClick={onBack}
           className="flex h-10 w-10 items-center justify-center rounded-full text-zinc-600 hover:bg-zinc-200 dark:text-zinc-300 dark:hover:bg-zinc-800"
-          aria-label="Orqaga"
+          aria-label={t("common.back")}
         >
           <Icon icon={IconChevronBack} size={24} />
         </button>
         <h1 className="flex-1 text-center text-[17px] font-semibold text-zinc-900 dark:text-white">
-          Add Members
+          {t("info.membersAddTitle")}
         </h1>
         <div className="w-10" />
       </header>
@@ -106,7 +124,7 @@ export function AddMembersPanel({ conversation, onBack, onAdded }: AddMembersPan
           />
           <input
             type="search"
-            placeholder="Search"
+            placeholder={t("common.search")}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className={cn(
@@ -120,11 +138,11 @@ export function AddMembersPanel({ conversation, onBack, onAdded }: AddMembersPan
       </div>
 
       <div className="flex-1 overflow-y-auto">
-        {isLoading ? (
+        {showLoading ? (
           <ChatListSkeleton count={8} showMeta={false} showCheckbox />
         ) : availableContacts.length === 0 ? (
           <p className="px-4 py-8 text-center text-sm text-zinc-400">
-            Qo&apos;shish uchun kontakt topilmadi
+            {t("info.membersAddEmpty")}
           </p>
         ) : (
           availableContacts.map((contact) => {
@@ -143,7 +161,7 @@ export function AddMembersPanel({ conversation, onBack, onAdded }: AddMembersPan
                     {contact.name}
                   </p>
                   <p className="truncate text-sm text-zinc-500 dark:text-zinc-400">
-                    {contact.lastSeen ?? "last seen recently"}
+                    {contact.lastSeen ?? t("presence.lastSeenRecently")}
                   </p>
                 </div>
               </button>
@@ -162,7 +180,7 @@ export function AddMembersPanel({ conversation, onBack, onAdded }: AddMembersPan
             "bg-[#00bbff] text-white hover:bg-[#00a3e0] hover:scale-105",
             (selectedIds.length === 0 || isAdding) && "cursor-not-allowed opacity-60",
           )}
-          aria-label="A'zolarni qo'shish"
+          aria-label={t("info.membersAddConfirm")}
         >
           <Icon icon={IconPersonAdd} size={26} />
         </button>

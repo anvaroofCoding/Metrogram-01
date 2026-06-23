@@ -1,4 +1,5 @@
 import { useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Icon, IconAdd, IconCamera, IconChevronBack } from "@/components/icons";
 import { Input } from "@/components/ui/input";
 import { uploadAvatarImage } from "@/lib/avatar-upload";
@@ -18,6 +19,7 @@ interface NewChannelFormStepProps {
 }
 
 export function NewChannelFormStep({ data, onChange, onBack, onNext }: NewChannelFormStepProps) {
+  const { t } = useTranslation();
   const fileRef = useRef<HTMLInputElement>(null);
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
   const [photoError, setPhotoError] = useState<string | null>(null);
@@ -33,7 +35,7 @@ export function NewChannelFormStep({ data, onChange, onBack, onNext }: NewChanne
       const url = await uploadAvatarImage(file);
       onChange({ ...data, avatarUrl: url });
     } catch {
-      setPhotoError("Rasm yuklanmadi. Boshqa fayl tanlang.");
+      setPhotoError(t("common.photoUploadFailed"));
     } finally {
       setUploadingPhoto(false);
       e.target.value = "";
@@ -47,12 +49,12 @@ export function NewChannelFormStep({ data, onChange, onBack, onNext }: NewChanne
           type="button"
           onClick={onBack}
           className="flex h-10 w-10 items-center justify-center rounded-full text-zinc-600 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800"
-          aria-label="Orqaga"
+          aria-label={t("common.back")}
         >
           <Icon icon={IconChevronBack} size={24} />
         </button>
         <h1 className="flex-1 text-center text-[17px] font-semibold text-zinc-900 dark:text-white">
-          New Channel
+          {t("createChannel.title")}
         </h1>
         <div className="w-10" />
       </header>
@@ -67,7 +69,7 @@ export function NewChannelFormStep({ data, onChange, onBack, onNext }: NewChanne
               "relative flex h-[120px] w-[120px] items-center justify-center rounded-full bg-[#00bbff] text-white shadow-lg transition hover:bg-[#00a3e0]",
               uploadingPhoto && "cursor-wait opacity-80",
             )}
-            aria-label="Rasm yuklash"
+            aria-label={t("common.uploadPhoto")}
           >
             {data.avatarUrl ? (
               <img
@@ -98,8 +100,8 @@ export function NewChannelFormStep({ data, onChange, onBack, onNext }: NewChanne
 
         <div className="space-y-4">
           <Input
-            label="Channel name"
-            placeholder="Channel name"
+            label={t("createChannel.name")}
+            placeholder={t("createChannel.name")}
             value={data.title}
             onChange={(e) => onChange({ ...data, title: e.target.value })}
             autoFocus
@@ -110,12 +112,12 @@ export function NewChannelFormStep({ data, onChange, onBack, onNext }: NewChanne
               htmlFor="channel-description"
               className="absolute -top-2.5 left-3 z-10 bg-white px-1 text-xs font-medium text-[#00bbff] dark:bg-[#1e1e1e]"
             >
-              Description
+              {t("common.description")}
             </label>
             <textarea
               id="channel-description"
               rows={3}
-              placeholder="Description (optional)"
+              placeholder={t("common.descriptionOptional")}
               value={data.description}
               onChange={(e) => onChange({ ...data, description: e.target.value })}
               className={cn(
@@ -128,7 +130,7 @@ export function NewChannelFormStep({ data, onChange, onBack, onNext }: NewChanne
           </div>
 
           <p className="px-1 text-sm text-zinc-500 dark:text-zinc-400">
-            You can provide an optional description for your channel.
+            {t("createChannel.descriptionHint")}
           </p>
           {photoError && (
             <p className="px-1 text-center text-sm text-red-500">{photoError}</p>
@@ -147,7 +149,7 @@ export function NewChannelFormStep({ data, onChange, onBack, onNext }: NewChanne
               ? "bg-[#00bbff] text-white hover:bg-[#00a3e0] hover:scale-105"
               : "cursor-not-allowed bg-zinc-300 text-zinc-500 dark:bg-zinc-700",
           )}
-          aria-label="Keyingi"
+          aria-label={t("common.next")}
         >
           <Icon icon={IconChevronBack} size={26} className="rotate-180" />
         </button>

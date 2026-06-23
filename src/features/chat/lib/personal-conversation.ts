@@ -1,4 +1,4 @@
-import { getCurrentUserId } from "@/features/auth/auth-session";
+import { getCurrentUserId, readAuthUser } from "@/features/auth/auth-session";
 import type { Contact, Conversation } from "@/types/chat";
 
 export function buildUserIdAliasSet(
@@ -22,7 +22,45 @@ export function buildUserIdAliasSet(
     aliases.add("admin");
   }
 
+  const authUser = readAuthUser();
+  if (authUser) {
+    const authUsername = authUser.username.toLowerCase();
+    const refersToAuthUser =
+      userId === authUser.id ||
+      userId === "admin" ||
+      aliases.has(authUser.id) ||
+      (contact?.username != null &&
+        contact.username.toLowerCase() === authUsername) ||
+      (contact?.phone != null && contact.phone === authUser.phone);
+
+    if (refersToAuthUser) {
+      aliases.add(authUser.id);
+      if (authUser.username === "admin") aliases.add("admin");
+
+      const authContact =
+        contact ??
+        contacts.find((entry) => entry.id === authUser.id) ??
+        (authUser.username === "admin"
+          ? contacts.find((entry) => entry.username === "admin")
+          : undefined);
+
+      if (authContact) {
+        aliases.add(authContact.id);
+        if (authContact.username === "admin") aliases.add("admin");
+      }
+    }
+  }
+
   return aliases;
+}
+
+export function isSameUserId(
+  userIdA: string,
+  userIdB: string,
+  contacts: Contact[] = [],
+): boolean {
+  const aliasesA = buildUserIdAliasSet(userIdA, contacts);
+  return [...buildUserIdAliasSet(userIdB, contacts)].some((id) => aliasesA.has(id));
 }
 
 export function findPersonalConversation(
@@ -49,10 +87,17 @@ export async function openOrFindPersonalChat(options: {
   contacts?: Contact[];
   openPersonalChat: (args: { userId: string }) => Promise<Conversation>;
 }): Promise<Conversation> {
+  const contacts = options.contacts ?? [];
+  const currentUserId = getCurrentUserId();
+
+  if (isSameUserId(options.userId, currentUserId, contacts)) {
+    throw new Error("O'zingizga yozish mumkin emas");
+  }
+
   const existing = findPersonalConversation(
     options.conversations,
     options.userId,
-    options.contacts ?? [],
+    contacts,
   );
   if (existing) return existing;
   return options.openPersonalChat({ userId: options.userId });

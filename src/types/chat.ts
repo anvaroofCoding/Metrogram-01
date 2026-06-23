@@ -94,6 +94,7 @@ export interface Conversation {
   description?: string;
   subscriberCount?: number;
   inviteLink?: string;
+  isPublic?: boolean;
   pinnedMessage?: PinnedMessageInfo;
   /** Sidebar ro'yxatida pin */
   isPinned?: boolean;
@@ -156,6 +157,7 @@ export interface UpdateConversationInput {
   title?: string;
   description?: string;
   avatarUrl?: string;
+  isPublic?: boolean;
 }
 
 export interface CreateChannelInput {
@@ -165,4 +167,6 @@ export interface CreateChannelInput {
   memberIds: string[];
 }
 
-export type CreateGroupInput = CreateChannelInput;
+export interface CreateGroupInput extends CreateChannelInput {
+  isPublic?: boolean;
+}

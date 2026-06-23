@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Icon, IconChevronBack, IconSearch } from "@/components/icons";
 import { ContactAvatar } from "@/features/chat/components/create-channel/ContactAvatar";
 import { ChatListSkeleton } from "@/features/chat/components/sidebar/ChatListSkeleton";
@@ -14,6 +15,7 @@ interface ContactsPanelProps {
 }
 
 export function ContactsPanel({ onBack, onContactSelect }: ContactsPanelProps) {
+  const { t } = useTranslation();
   const [search, setSearch] = useState("");
   useContactRealtime();
 
@@ -31,12 +33,12 @@ export function ContactsPanel({ onBack, onContactSelect }: ContactsPanelProps) {
           type="button"
           onClick={onBack}
           className="flex h-10 w-10 items-center justify-center rounded-full text-zinc-600 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800"
-          aria-label="Orqaga"
+          aria-label={t("common.back")}
         >
           <Icon icon={IconChevronBack} size={24} />
         </button>
         <h1 className="flex-1 text-center text-[17px] font-semibold text-zinc-900 dark:text-white">
-          Contacts
+          {t("contacts.title")}
         </h1>
         <div className="w-10" />
       </header>
@@ -50,7 +52,7 @@ export function ContactsPanel({ onBack, onContactSelect }: ContactsPanelProps) {
           />
           <input
             type="search"
-            placeholder="Search"
+            placeholder={t("common.search")}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className={cn(
@@ -69,22 +71,19 @@ export function ContactsPanel({ onBack, onContactSelect }: ContactsPanelProps) {
         ) : isError ? (
           <div className="flex flex-col items-center gap-3 px-4 py-12 text-center">
             <p className="text-sm text-red-500">
-              {error instanceof Error ? error.message : "Kontaktlarni yuklab bo'lmadi"}
+              {error instanceof Error ? error.message : t("common.loadFailed")}
             </p>
             <button
               type="button"
               onClick={() => void refetch()}
               className="rounded-full bg-[#00bbff] px-5 py-2 text-sm font-medium text-white hover:bg-[#00a3e0]"
             >
-              Qayta urinish
+              {t("common.retry")}
             </button>
           </div>
         ) : visibleContacts.length === 0 ? (
           <div className="flex flex-col items-center gap-2 px-4 py-12 text-center">
-            <p className="text-sm text-zinc-500">Hali kontaktlar yo&apos;q</p>
-            <p className="text-xs text-zinc-400">
-              Admin orqali foydalanuvchi ro&apos;yxatdan o&apos;tkazing
-            </p>
+            <p className="text-sm text-zinc-500">{t("contacts.empty")}</p>
           </div>
         ) : (
           visibleContacts.map((contact) => {

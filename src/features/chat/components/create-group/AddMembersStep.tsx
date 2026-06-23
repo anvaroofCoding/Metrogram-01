@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   Icon,
   IconChevronBack,
@@ -8,6 +9,7 @@ import {
 } from "@/components/icons";
 import { ChatListSkeleton } from "@/features/chat/components/sidebar/ChatListSkeleton";
 import { ContactAvatar } from "@/features/chat/components/create-channel/ContactAvatar";
+import { filterContactsForCurrentUser } from "@/features/chat/lib/conversation-display";
 import { useGetContactsQuery } from "@/features/users/api/usersApi";
 import { cn } from "@/lib/utils";
 import type { Contact } from "@/types/chat";
@@ -47,12 +49,18 @@ export function AddMembersStep({
   onCreate,
   isCreating,
 }: AddMembersStepProps) {
+  const { t } = useTranslation();
   const [search, setSearch] = useState("");
-  const canCreate = selectedIds.length > 0 && !isCreating;
+  const canCreate = !isCreating;
 
   const { data: contacts = [], isLoading } = useGetContactsQuery(
     { search },
     { pollingInterval: 8000 },
+  );
+
+  const availableContacts = useMemo(
+    () => filterContactsForCurrentUser(contacts),
+    [contacts],
   );
 
   const toggleContact = (contact: Contact) => {
@@ -70,12 +78,12 @@ export function AddMembersStep({
           type="button"
           onClick={onBack}
           className="flex h-10 w-10 items-center justify-center rounded-full text-zinc-600 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800"
-          aria-label="Orqaga"
+          aria-label={t("common.back")}
         >
           <Icon icon={IconChevronBack} size={24} />
         </button>
         <h1 className="flex-1 text-center text-[17px] font-semibold text-zinc-900 dark:text-white">
-          Add Members
+          {t("createGroup.membersTitle")}
         </h1>
         <div className="w-10" />
       </header>
@@ -89,7 +97,7 @@ export function AddMembersStep({
           />
           <input
             type="search"
-            placeholder="Search"
+            placeholder={t("common.search")}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className={cn(
@@ -105,10 +113,12 @@ export function AddMembersStep({
       <div className="flex-1 overflow-y-auto">
         {isLoading ? (
           <ChatListSkeleton count={8} showMeta={false} showCheckbox />
-        ) : contacts.length === 0 ? (
-          <p className="px-4 py-8 text-center text-sm text-zinc-400">Kontaktlar topilmadi</p>
+        ) : availableContacts.length === 0 ? (
+          <p className="px-4 py-8 text-center text-sm text-zinc-400">
+            {t("createGroup.membersEmpty")}
+          </p>
         ) : (
-          contacts.map((contact) => {
+          availableContacts.map((contact) => {
             const checked = selectedIds.includes(contact.id);
             return (
               <div
@@ -133,7 +143,7 @@ export function AddMembersStep({
                     )}
                   </div>
                   <p className="truncate text-sm text-zinc-500 dark:text-zinc-400">
-                    {contact.lastSeen ?? "last seen recently"}
+                    {contact.lastSeen ?? t("presence.lastSeenRecently")}
                   </p>
                 </div>
               </div>
@@ -154,7 +164,7 @@ export function AddMembersStep({
               : "cursor-not-allowed bg-zinc-300 text-zinc-500 dark:bg-zinc-700",
             isCreating && "cursor-wait opacity-70",
           )}
-          aria-label="Guruh yaratish"
+          aria-label={t("createGroup.create")}
         >
           <Icon icon={IconChevronForward} size={28} />
         </button>

@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { Icon, IconChevronBack } from "@/components/icons";
 import { cn } from "@/lib/utils";
 
@@ -16,6 +17,8 @@ export function PanelShell({
   className,
   subtitle,
 }: PanelShellProps) {
+  const { t } = useTranslation();
+
   return (
     <div
       className={cn(
@@ -29,7 +32,7 @@ export function PanelShell({
           type="button"
           onClick={onBack}
           className="flex h-10 w-10 items-center justify-center rounded-full text-zinc-600 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800"
-          aria-label="Orqaga"
+          aria-label={t("common.back")}
         >
           <Icon icon={IconChevronBack} size={24} />
         </button>

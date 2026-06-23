@@ -1,4 +1,5 @@
-import type { AttachmentKind, UploadedFile } from "@/types/attachments";
+import { resolveApiUrl } from "@/config/api-url";
+import type { AttachmentKind, MessageAttachment, UploadedFile } from "@/types/attachments";
 
 export function detectAttachmentKind(file: File): AttachmentKind {
   if (file.type.startsWith("image/")) return "image";
@@ -60,6 +61,22 @@ export function voiceToAttachment(
   };
 }
 
+export function isVideoAttachment(
+  attachment: Pick<MessageAttachment, "kind" | "mimeType" | "name">,
+): boolean {
+  if (attachment.kind === "video") return true;
+  if (attachment.mimeType?.startsWith("video/")) return true;
+  return /\.(mp4|webm|mov|m4v|mkv|avi)(\?.*)?$/i.test(attachment.name);
+}
+
+export function isImageAttachment(
+  attachment: Pick<MessageAttachment, "kind" | "mimeType" | "name">,
+): boolean {
+  if (attachment.kind === "image") return true;
+  if (attachment.mimeType?.startsWith("image/")) return true;
+  return /\.(jpe?g|png|gif|webp|avif|bmp|svg)(\?.*)?$/i.test(attachment.name);
+}
+
 /** Server yoki nisbiy yo'l, base64 va to'liq URL larni img src uchun normalizatsiya qiladi. */
 const failedMediaUrls = new Set<string>();
 
@@ -80,9 +97,9 @@ export function resolveMediaUrl(url?: string | null): string | undefined {
   ) {
     return value;
   }
-  if (value.startsWith("/api/")) return value;
+  if (value.startsWith("/api/")) return resolveApiUrl(value);
   if (value.startsWith("/")) return value;
-  if (!value.includes("/")) return `/api/uploads/files/${value}`;
+  if (!value.includes("/")) return resolveApiUrl(`/api/uploads/files/${value}`);
   return value;
 }
 

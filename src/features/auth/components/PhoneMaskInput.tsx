@@ -5,6 +5,7 @@ import {
   type ClipboardEvent,
   type KeyboardEvent,
 } from "react";
+import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
 import type { Country } from "../data/countries";
 import { getLocalDigitCount } from "../data/countries";
@@ -27,6 +28,7 @@ export function PhoneMaskInput({
   autoFocus,
   className,
 }: PhoneMaskInputProps) {
+  const { t } = useTranslation();
   const inputRef = useRef<HTMLInputElement>(null);
   const display = formatMaskedPhone(country, value);
   const maxDigits = getLocalDigitCount(country);
@@ -73,7 +75,7 @@ export function PhoneMaskInput({
   return (
     <div className={cn("relative", className)}>
       <label className="pointer-events-none absolute -top-2.5 left-3 z-10 bg-white px-1 text-xs font-medium text-[#00bbff] dark:bg-[#212121]">
-        Telefon raqami
+        {t("auth.phone")}
       </label>
 
       <div
@@ -112,7 +114,7 @@ export function PhoneMaskInput({
           onKeyDown={handleKeyDown}
           onPaste={handlePaste}
           className="absolute inset-0 cursor-text opacity-0"
-          aria-label="Telefon raqami"
+          aria-label={t("auth.phone")}
         />
       </div>
     </div>

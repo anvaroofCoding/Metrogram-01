@@ -1,19 +1,13 @@
 import { io, type Socket } from "socket.io-client";
-import { env } from "@/config/env";
+import { getRealtimeBaseUrl } from "@/config/api-url";
 import { getCurrentUserId } from "@/features/auth/auth-session";
 
 let socket: Socket | null = null;
 let refCount = 0;
 let disconnectTimer: ReturnType<typeof setTimeout> | null = null;
 
-function getSocketBaseUrl(): string {
-  if (env.wsUrl.trim()) return env.wsUrl.replace(/\/$/, "");
-  if (import.meta.env.DEV) return "http://localhost:3000";
-  return window.location.origin;
-}
-
 function createSocket(): Socket {
-  return io(`${getSocketBaseUrl()}/realtime`, {
+  return io(`${getRealtimeBaseUrl()}/realtime`, {
     path: "/socket.io",
     transports: ["websocket", "polling"],
     autoConnect: true,

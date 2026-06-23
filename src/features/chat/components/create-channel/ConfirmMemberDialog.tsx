@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { ContactAvatar } from "./ContactAvatar";
 import { cn } from "@/lib/utils";
 import type { Contact } from "@/types/chat";
@@ -17,6 +18,8 @@ export function ConfirmMemberDialog({
   onCancel,
   onConfirm,
 }: ConfirmMemberDialogProps) {
+  const { t } = useTranslation();
+
   if (!open || !contact) return null;
 
   return (
@@ -34,13 +37,16 @@ export function ConfirmMemberDialog({
       >
         <div className="flex items-center gap-3 px-5 pt-5">
           <ContactAvatar contact={contact} size="md" className="h-10 w-10 text-sm" />
-          <h3 className="text-[17px] font-semibold text-zinc-900 dark:text-white">Add member</h3>
+          <h3 className="text-[17px] font-semibold text-zinc-900 dark:text-white">
+            {t("createChannel.confirmAddTitle")}
+          </h3>
         </div>
 
         <p className="px-5 py-4 text-[15px] leading-relaxed text-zinc-700 dark:text-zinc-300">
-          Are you sure you want to add{" "}
-          <strong className="font-semibold text-zinc-900 dark:text-white">{contact.name}</strong> to{" "}
-          <strong className="font-semibold text-zinc-900 dark:text-white">{channelName}</strong>?
+          {t("createChannel.confirmAddDescription", {
+            name: contact.name,
+            channelName,
+          })}
         </p>
 
         <div className="flex justify-end gap-1 px-3 pb-3">
@@ -49,14 +55,14 @@ export function ConfirmMemberDialog({
             onClick={onCancel}
             className="rounded-lg px-4 py-2.5 text-sm font-bold uppercase tracking-wide text-[#00bbff] hover:bg-[#00bbff]/10"
           >
-            Cancel
+            {t("common.cancel")}
           </button>
           <button
             type="button"
             onClick={onConfirm}
             className="rounded-lg px-4 py-2.5 text-sm font-bold uppercase tracking-wide text-[#00bbff] hover:bg-[#00bbff]/10"
           >
-            Add
+            {t("common.add")}
           </button>
         </div>
       </div>

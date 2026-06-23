@@ -1,7 +1,14 @@
 import { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Icon, IconAdd, IconCamera, IconChevronBack } from "@/components/icons";
 import { Input } from "@/components/ui/input";
 import { useUpdateConversationMutation } from "@/features/chat/api/chatApi";
+import {
+  GroupTypeSelector,
+  groupVisibilityToIsPublic,
+  isPublicToGroupVisibility,
+  type GroupVisibility,
+} from "@/features/chat/components/create-group/GroupTypeSelector";
 import { uploadAvatarImage } from "@/lib/avatar-upload";
 import { cn } from "@/lib/utils";
 import type { Conversation } from "@/types/chat";
@@ -13,21 +20,27 @@ interface EditChannelPanelProps {
 }
 
 export function EditChannelPanel({ conversation, onBack, onSaved }: EditChannelPanelProps) {
+  const { t } = useTranslation();
   const fileRef = useRef<HTMLInputElement>(null);
   const { mutateAsync: updateConversation, isLoading: saving } = useUpdateConversationMutation();
 
   const [title, setTitle] = useState(conversation.title);
   const [description, setDescription] = useState(conversation.description ?? "");
   const [avatarUrl, setAvatarUrl] = useState<string | undefined>(conversation.avatarUrl);
+  const [visibility, setVisibility] = useState<GroupVisibility>(
+    isPublicToGroupVisibility(conversation.isPublic),
+  );
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const isChannel = conversation.category === "channel";
+  const isGroup = conversation.category === "group";
 
   useEffect(() => {
     setTitle(conversation.title);
     setDescription(conversation.description ?? "");
     setAvatarUrl(conversation.avatarUrl);
+    setVisibility(isPublicToGroupVisibility(conversation.isPublic));
   }, [conversation]);
 
   const handlePhotoChange = async (file: File | undefined) => {
@@ -37,7 +50,7 @@ export function EditChannelPanel({ conversation, onBack, onSaved }: EditChannelP
     try {
       setAvatarUrl(await uploadAvatarImage(file));
     } catch {
-      setError("Rasm yuklanmadi. Boshqa fayl tanlang.");
+      setError(t("common.photoUploadFailed"));
     } finally {
       setUploadingPhoto(false);
     }
@@ -48,7 +61,7 @@ export function EditChannelPanel({ conversation, onBack, onSaved }: EditChannelP
 
     const trimmedTitle = title.trim();
     if (!trimmedTitle) {
-      setError("Kanal nomi majburiy");
+      setError(isChannel ? t("info.channelNameRequired") : t("info.groupNameRequired"));
       return;
     }
 
@@ -58,11 +71,12 @@ export function EditChannelPanel({ conversation, onBack, onSaved }: EditChannelP
         title: trimmedTitle,
         description: description.trim(),
         avatarUrl,
+        ...(isGroup ? { isPublic: groupVisibilityToIsPublic(visibility) } : {}),
       });
       onSaved?.(updated);
       onBack();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Saqlashda xatolik");
+      setError(err instanceof Error ? err.message : t("common.saveError"));
     }
   };
 
@@ -73,12 +87,12 @@ export function EditChannelPanel({ conversation, onBack, onSaved }: EditChannelP
           type="button"
           onClick={onBack}
           className="flex h-10 w-10 items-center justify-center rounded-full text-zinc-600 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800"
-          aria-label="Orqaga"
+          aria-label={t("common.back")}
         >
           <Icon icon={IconChevronBack} size={24} />
         </button>
         <h1 className="flex-1 text-center text-[17px] font-semibold text-zinc-900 dark:text-white">
-          {isChannel ? "Edit Channel" : "Edit Group"}
+          {isChannel ? t("info.editChannel") : t("info.editGroup")}
         </h1>
         <button
           type="button"
@@ -86,7 +100,7 @@ export function EditChannelPanel({ conversation, onBack, onSaved }: EditChannelP
           disabled={saving || !title.trim() || uploadingPhoto}
           className="rounded-full px-3 py-1.5 text-[15px] font-semibold text-[#00bbff] hover:bg-[#00bbff]/10 disabled:opacity-50"
         >
-          {saving ? "..." : "Done"}
+          {saving ? "..." : t("common.done")}
         </button>
       </header>
 
@@ -100,7 +114,7 @@ export function EditChannelPanel({ conversation, onBack, onSaved }: EditChannelP
               "relative flex h-[120px] w-[120px] items-center justify-center rounded-full bg-[#00bbff] text-white shadow-lg transition hover:bg-[#00a3e0]",
               uploadingPhoto && "cursor-wait opacity-80",
             )}
-            aria-label="Rasm yuklash"
+            aria-label={t("common.uploadPhoto")}
           >
             {avatarUrl ? (
               <img src={avatarUrl} alt="" className="h-full w-full rounded-full object-cover" />
@@ -127,8 +141,8 @@ export function EditChannelPanel({ conversation, onBack, onSaved }: EditChannelP
 
         <div className="space-y-4">
           <Input
-            label={isChannel ? "Channel name" : "Group name"}
-            placeholder={isChannel ? "Channel name" : "Group name"}
+            label={isChannel ? t("info.channelName") : t("info.groupName")}
+            placeholder={isChannel ? t("info.channelName") : t("info.groupName")}
             value={title}
             onChange={(e) => setTitle(e.target.value)}
           />
@@ -138,12 +152,12 @@ export function EditChannelPanel({ conversation, onBack, onSaved }: EditChannelP
               htmlFor="edit-channel-description"
               className="absolute -top-2.5 left-3 z-10 bg-[#f4f4f5] px-1 text-xs font-medium text-[#00bbff] dark:bg-[#1c1c1e]"
             >
-              Description
+              {t("common.description")}
             </label>
             <textarea
               id="edit-channel-description"
               rows={3}
-              placeholder="Description (optional)"
+              placeholder={t("common.descriptionOptional")}
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               className={cn(
@@ -154,6 +168,10 @@ export function EditChannelPanel({ conversation, onBack, onSaved }: EditChannelP
               )}
             />
           </div>
+
+          {isGroup && (
+            <GroupTypeSelector value={visibility} onChange={setVisibility} />
+          )}
         </div>
 
         {error && <p className="mt-4 text-center text-sm text-red-500">{error}</p>}

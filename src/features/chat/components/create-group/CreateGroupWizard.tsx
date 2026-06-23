@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 import type { Conversation } from "@/types/chat";
 import { AddMembersStep } from "./AddMembersStep";
 import { NewGroupFormStep, type GroupFormData } from "./NewGroupFormStep";
+import { groupVisibilityToIsPublic } from "./GroupTypeSelector";
 
 type WizardStep = "form" | "members";
 
@@ -15,6 +16,7 @@ interface CreateGroupWizardProps {
 
 const INITIAL_FORM: GroupFormData = {
   title: "",
+  visibility: "private",
 };
 
 export function CreateGroupWizard({ onClose, onCreated, className }: CreateGroupWizardProps) {
@@ -24,13 +26,13 @@ export function CreateGroupWizard({ onClose, onCreated, className }: CreateGroup
   const { mutateAsync: createGroup, isLoading } = useCreateGroupMutation();
 
   const handleCreate = async () => {
-    if (selectedIds.length === 0) return;
-
     try {
       const conversation = await createGroup({
         title: formData.title.trim(),
+        description: formData.description?.trim() || undefined,
         avatarUrl: formData.avatarUrl,
         memberIds: selectedIds,
+        isPublic: groupVisibilityToIsPublic(formData.visibility),
       });
       onCreated(conversation);
     } catch {
